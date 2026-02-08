@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EVA — Un pomeriggio tra donne e cose belle</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --night: #080C12;
+      --starlight: #F0EDE8;
+      --moonlight: #C8C3BB;
+
+      --warm-bg: #FAF7F2;
+      --warm-bg-alt: #F3EEE7;
+      --warm-text: #1A1714;
+      --warm-muted: #5C544B;
+      --warm-light: #9A8E86;
+      --warm-border: #E8E2DA;
+
+      --accent: #B59A5B;
+      --accent-hover: #9E8549;
+      --accent-soft: rgba(181, 154, 91, 0.15);
+      --dark: #1A1714;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background-color: var(--warm-bg);
+      color: var(--warm-text);
+      font-weight: 300;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ==============================
+       HERO (photo background)
+       ============================== */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+      background: url('dimora-finestra.jpg') center/cover no-repeat;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(
+        to bottom,
+        rgba(8,12,18,0.5) 0%,
+        rgba(8,12,18,0.4) 40%,
+        rgba(8,12,18,0.45) 70%,
+        rgba(8,12,18,0.8) 100%
+      );
+    }
+
+    .hero-content { position: relative; z-index: 1; max-width: 700px; }
+
+    .hero-logo {
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 400;
+      letter-spacing: 0.5em;
+      text-transform: uppercase;
+      color: #FFFFFF;
+      margin-bottom: 2.5rem;
+      text-shadow: 0 2px 16px rgba(0,0,0,0.5);
+    }
+    .hero-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(4.5rem, 14vw, 9rem);
+      font-weight: 300; letter-spacing: 0.2em;
+      color: #FFFFFF; line-height: 0.9;
+      margin-bottom: 2rem;
+      text-shadow: 0 2px 20px rgba(0,0,0,0.3);
+    }
+    .hero-line {
+      width: 40px; height: 1px;
+      background: rgba(255,255,255,0.4);
+      margin: 0 auto 2rem;
+    }
+    .hero-subtitle {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.3rem, 3vw, 1.7rem);
+      font-weight: 300; font-style: italic;
+      color: rgba(255,255,255,0.95); line-height: 1.5;
+      text-shadow: 0 1px 12px rgba(0,0,0,0.4);
+    }
+    .hero-details {
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.68rem; letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.8);
+      margin-top: 3rem; font-weight: 300;
+      text-shadow: 0 1px 10px rgba(0,0,0,0.4);
+    }
+    .hero-details span { display: inline-block; margin: 0 0.8rem; }
+    .hero-details .dot { color: rgba(255,255,255,0.4); }
+
+    .scroll-hint {
+      position: absolute; bottom: 2rem; left: 50%;
+      transform: translateX(-50%);
+      display: flex; flex-direction: column;
+      align-items: center; gap: 0.5rem;
+      color: rgba(240,237,232,0.4); font-size: 0.6rem;
+      letter-spacing: 0.25em; text-transform: uppercase;
+      z-index: 1;
+    }
+    .scroll-hint .line {
+      width: 1px; height: 24px;
+      background: rgba(240,237,232,0.3);
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 0.3; transform: scaleY(1); }
+      50% { opacity: 0.8; transform: scaleY(1.2); }
+    }
+
+    .hero-transition {
+      height: 60px;
+      background: linear-gradient(to bottom, rgba(8,12,18,0.9), var(--warm-bg));
+    }
+
+    /* ==============================
+       SHARED
+       ============================== */
+    .section-label {
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.6rem; letter-spacing: 0.45em;
+      text-transform: uppercase; color: var(--accent);
+      margin-bottom: 1rem; font-weight: 400;
+    }
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2rem, 4.5vw, 2.8rem);
+      font-weight: 300; color: var(--warm-text);
+      margin-bottom: 1.5rem; line-height: 1.2;
+      letter-spacing: -0.01em;
+    }
+
+    /* ==============================
+       OPENING (text + mosaic + mini CTA)
+       ============================== */
+    .opening {
+      padding: 3rem 2rem 0;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    .opening-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.2rem, 2.5vw, 1.5rem);
+      font-weight: 300; line-height: 1.7;
+      color: var(--warm-muted);
+      max-width: 580px;
+      margin: 0 auto 1.5rem;
+      text-align: center;
+    }
+    .opening-text strong { color: var(--warm-text); font-weight: 500; }
+
+    .mosaic {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      gap: 0.4rem;
+      height: clamp(380px, 50vw, 520px);
+    }
+    .mosaic-img { overflow: hidden; border-radius: 3px; }
+    .mosaic-img img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s ease;
+    }
+    .mosaic-img:hover img { transform: scale(1.03); }
+    .mosaic-img:first-child { grid-row: 1 / 3; }
+    @media (max-width: 600px) {
+      .mosaic {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 1.4fr 1fr;
+        height: clamp(280px, 75vw, 400px);
+      }
+    }
+
+    .mini-cta {
+      text-align: center;
+      padding: 2rem 0 2rem;
+    }
+    .mini-cta a {
+      display: inline-block;
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--dark);
+      text-decoration: none;
+      background: transparent;
+      padding: 0.9rem 2.5rem;
+      border: 1px solid var(--dark);
+      transition: all 0.3s ease;
+    }
+    .mini-cta a:hover {
+      background: var(--dark);
+      color: var(--warm-bg);
+    }
+
+    /* ==============================
+       COME FUNZIONA (clean, no numbers)
+       ============================== */
+    .how-section {
+      background: var(--warm-bg-alt);
+      padding: 4rem 2rem;
+    }
+    .how-inner {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .how-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2rem;
+      margin-top: 1rem;
+    }
+    @media (max-width: 700px) {
+      .how-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 420px) {
+      .how-grid { grid-template-columns: 1fr; }
+    }
+    .how-card {
+      padding: 0;
+    }
+    .how-card h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.2rem; font-weight: 500;
+      color: var(--warm-text); margin-bottom: 0.5rem;
+    }
+    .how-card p {
+      font-size: 0.85rem; line-height: 1.7;
+      color: var(--warm-muted);
+    }
+
+    /* ==============================
+       COSA TROVERAI (editorial typography)
+       ============================== */
+    .experiences {
+      padding: 4rem 2rem;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .exp-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      margin-top: 1rem;
+      border-top: 1px solid var(--warm-border);
+    }
+    @media (max-width: 600px) {
+      .exp-grid { grid-template-columns: 1fr; }
+    }
+    .exp-card {
+      padding: 2rem 1.5rem;
+      border-bottom: 1px solid var(--warm-border);
+    }
+    .exp-card:nth-child(odd) {
+      border-right: 1px solid var(--warm-border);
+    }
+    @media (max-width: 600px) {
+      .exp-card:nth-child(odd) { border-right: none; }
+    }
+    .exp-card-img { display: none; }
+    .exp-card-body h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.5rem; font-weight: 400;
+      color: var(--warm-text);
+      margin-bottom: 0.6rem;
+      line-height: 1.2;
+    }
+    .exp-card-body p {
+      font-size: 0.88rem; line-height: 1.7;
+      color: var(--warm-muted);
+    }
+    .exp-card-body .exp-who {
+      margin-top: 0.6rem;
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.6rem;
+      color: var(--accent); font-weight: 400;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+    .exp-more {
+      margin-top: 2rem;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem; font-style: italic;
+      color: var(--warm-light);
+      text-align: center;
+    }
+
+    /* ==============================
+       QUOTE BREAK
+       ============================== */
+    .quote-break {
+      position: relative;
+      padding: 5rem 2rem;
+      text-align: center;
+      background: var(--dark);
+      overflow: hidden;
+    }
+    .quote-break::before {
+      content: '';
+      display: none;
+    }
+    .quote-break-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 300; font-style: italic;
+      color: #FFFFFF; line-height: 1.3;
+      max-width: 600px; margin: 0 auto;
+      position: relative;
+    }
+    .quote-break-profiles {
+      display: flex; flex-direction: column;
+      gap: 0.75rem; max-width: 500px;
+      margin: 2rem auto 0; text-align: left;
+    }
+    .quote-break-profile {
+      font-size: 0.9rem; line-height: 1.7;
+      color: rgba(255,255,255,0.7);
+      padding-left: 1.25rem;
+      border-left: 1px solid var(--accent);
+    }
+    .quote-break-profile strong {
+      color: #FFFFFF; font-weight: 400;
+    }
+    .quote-break-sub {
+      margin-top: 2rem;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.05rem; color: rgba(255,255,255,0.5);
+      font-style: italic;
+      line-height: 1.7; max-width: 480px;
+      margin-left: auto; margin-right: auto;
+    }
+
+    /* ==============================
+       FOUNDER
+       ============================== */
+    .founder {
+      padding: 4rem 2rem;
+      max-width: 900px; margin: 0 auto;
+    }
+    .founder-inner {
+      display: flex; gap: 2.5rem;
+      align-items: flex-start;
+    }
+    @media (max-width: 600px) {
+      .founder-inner {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+    }
+    .founder-photo {
+      width: 180px; height: 240px;
+      border-radius: 2px;
+      flex-shrink: 0; overflow: hidden;
+    }
+    .founder-photo img {
+      width: 100%; height: 100%; object-fit: cover;
+      filter: grayscale(100%);
+      transition: filter 0.4s ease;
+    }
+    .founder-photo:hover img {
+      filter: grayscale(0%);
+    }
+    .founder-body { flex: 1; }
+    .founder-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.05rem, 2vw, 1.15rem);
+      font-weight: 300; line-height: 1.9;
+      color: var(--warm-muted); margin-bottom: 1rem;
+    }
+    .founder-text strong {
+      color: var(--warm-text); font-weight: 500;
+    }
+    .founder-name {
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.7rem; font-weight: 400;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--warm-text); margin-bottom: 0.15rem;
+    }
+    .founder-link {
+      font-size: 0.8rem; color: var(--accent);
+      text-decoration: none;
+    }
+    .founder-link:hover { color: var(--accent-hover); }
+
+    /* ==============================
+       FAQ (on alt bg)
+       ============================== */
+    .info-section {
+      background: var(--warm-bg-alt);
+      padding: 4rem 2rem;
+    }
+    .info-inner {
+      max-width: 800px; margin: 0 auto;
+    }
+    .transparency-text {
+      text-align: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem; line-height: 1.7;
+      font-style: italic;
+      color: var(--warm-muted);
+      padding-bottom: 2.5rem; margin-bottom: 2.5rem;
+      border-bottom: 1px solid var(--warm-border);
+    }
+    .transparency-text strong {
+      color: var(--warm-text); font-weight: 500;
+      font-style: normal;
+    }
+    .faq-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.75rem 3rem;
+    }
+    @media (max-width: 600px) {
+      .faq-grid { grid-template-columns: 1fr; gap: 1.25rem; }
+    }
+    .faq-item h4 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.75rem; font-weight: 400;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--warm-text); margin-bottom: 0.4rem;
+    }
+    .faq-item p {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1rem; line-height: 1.65;
+      color: var(--warm-muted);
+    }
+
+    /* ==============================
+       CTA
+       ============================== */
+    .cta {
+      text-align: center;
+      padding: 4rem 2rem;
+      max-width: 800px; margin: 0 auto;
+    }
+    .cta p {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.05rem; color: var(--warm-muted);
+      margin-bottom: 1.75rem; line-height: 1.7;
+    }
+    .cta-buttons {
+      display: flex; gap: 1rem;
+      justify-content: center; flex-wrap: wrap;
+      margin-bottom: 1rem;
+    }
+    .btn {
+      display: inline-block;
+      padding: 0.95rem 2.5rem;
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.7rem; font-weight: 400;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    .btn-primary {
+      background: var(--dark); color: white;
+      border: 1px solid var(--dark);
+    }
+    .btn-primary:hover {
+      background: transparent;
+      color: var(--dark);
+    }
+    .btn-secondary {
+      background: transparent;
+      color: var(--warm-muted);
+      border: 1px solid var(--warm-border);
+    }
+    .btn-secondary:hover {
+      border-color: var(--dark); color: var(--dark);
+    }
+    .cta-note {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.9rem; color: var(--warm-light);
+      font-style: italic;
+    }
+
+    /* ==============================
+       STICKY WHATSAPP (mobile)
+       ============================== */
+    .sticky-wa {
+      display: none;
+    }
+    @media (max-width: 700px) {
+      .sticky-wa {
+        display: flex;
+        position: fixed;
+        bottom: 1rem; right: 1rem;
+        z-index: 100;
+        background: #25D366;
+        color: white;
+        padding: 0.75rem 1.25rem;
+        border-radius: 50px;
+        font-size: 0.8rem;
+        font-weight: 400;
+        letter-spacing: 0.05em;
+        text-decoration: none;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+        align-items: center;
+        gap: 0.5rem;
+        transition: transform 0.2s ease;
+      }
+      .sticky-wa:hover { transform: scale(1.05); }
+      .sticky-wa svg {
+        width: 18px; height: 18px; fill: white;
+      }
+    }
+
+    /* ==============================
+       FOOTER
+       ============================== */
+    footer {
+      text-align: center;
+      padding: 2rem 2rem 5rem;
+      border-top: 1px solid var(--warm-border);
+      background: var(--warm-bg);
+    }
+    @media (min-width: 701px) {
+      footer { padding-bottom: 2rem; }
+    }
+    .footer-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.5rem; font-weight: 300;
+      letter-spacing: 0.4em; color: var(--warm-text);
+      margin-bottom: 0.4rem;
+    }
+    .footer-text {
+      font-size: 0.75rem; color: var(--warm-light);
+      letter-spacing: 0.1em; line-height: 1.8;
+    }
+    .footer-text a { color: var(--accent); text-decoration: none; }
+    .footer-text a:hover { color: var(--accent-hover); }
+
+    /* ==============================
+       ANIMATIONS
+       ============================== */
+    .fade-in {
+      opacity: 0; transform: translateY(16px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+  </style>
+</head>
+<body>
+
+  <!-- ========== HERO (photo background) ========== -->
+  <div class="hero">
+    <div class="hero-content">
+      <div class="hero-logo">14 Marzo 2026</div>
+      <h1 class="hero-title">EVA</h1>
+      <div class="hero-line"></div>
+      <p class="hero-subtitle">Un pomeriggio tra donne e cose belle</p>
+      <div class="hero-details">
+        <span>Genova</span>
+        <span class="dot">&middot;</span>
+        <span>ore 14 – 19</span>
+        <span class="dot">&middot;</span>
+        <span>Su invito</span>
+      </div>
+    </div>
+    <div class="scroll-hint">
+      <div class="line"></div>
+      scopri
+    </div>
+  </div>
+
+  <div class="hero-transition"></div>
+
+  <!-- ========== OPENING ========== -->
+  <div class="opening fade-in">
+    <p class="opening-text">
+      Una <strong>dimora storica</strong> tra i palazzi dei Rolli e la chiesa di San Siro.<br>
+      Un sabato pomeriggio senza fretta.<br>
+      Tè caldo, ceramiche fatte a mano, profumi artigianali,<br>
+      cose buone da assaggiare.<br>
+      E <strong>donne interessanti</strong> con cui chiacchierare —<br>
+      senza programma, senza palco, senza forzature.<br>
+      Solo un pomeriggio <strong>curato e pensato per noi</strong>.
+    </p>
+    <div class="mini-cta">
+      <a href="https://wa.me/393485284327?text=Ciao%20Alice!%20Ho%20visto%20il%20sito%20di%20EVA%20e%20mi%20piacerebbe%20saperne%20di%20pi%C3%B9">Ti piace l'idea? Scrivimi →</a>
+    </div>
+    <div class="mosaic">
+      <div class="mosaic-img">
+        <img src="dimora-salotto.jpg" alt="Salotto con camino e divano in velluto">
+      </div>
+      <div class="mosaic-img">
+        <img src="dimora-cucina.jpg" alt="Cucina con ceramiche e eucalipto">
+      </div>
+      <div class="mosaic-img">
+        <img src="dimora-angeli.jpg" alt="Vista dalla finestra sulla chiesa di San Siro">
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== COME FUNZIONA ========== -->
+  <div class="how-section fade-in">
+    <div class="how-inner">
+      <div class="section-label">Come funziona</div>
+      <h2 class="section-title">L'unica regola: stare bene</h2>
+      <div class="how-grid">
+        <div class="how-card">
+          <h3>Arrivi e ti senti a casa</h3>
+          <p>C'è musica, profuma di buono. Qualcuna ti sorride, qualcun'altra ti passa un bicchiere. Sei nel posto giusto.</p>
+        </div>
+        <div class="how-card">
+          <h3>Vai dove ti porta il naso</h3>
+          <p>Ogni stanza ha qualcosa di diverso. Ti siedi, curiosi, chiacchieri. Nessun palco, nessun programma da seguire.</p>
+        </div>
+        <div class="how-card">
+          <h3>Un tè tutte insieme</h3>
+          <p>A un certo punto ci fermiamo con una tazza in mano. Un momento breve e caldo. Poi ognuna riprende il suo giro.</p>
+        </div>
+        <div class="how-card">
+          <h3>Vai via quando vuoi</h3>
+          <p>Non c'è un finale. Te ne vai quando senti. Oppure resti per l'aperitivo — e non te ne vai più.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== COSA TROVERAI ========== -->
+  <section class="experiences fade-in">
+    <div class="section-label">Cosa troverai</div>
+    <h2 class="section-title">Ogni stanza, un piccolo mondo</h2>
+    <div class="exp-grid">
+      <div class="exp-card">
+        <img class="exp-card-img" src="exp-tea.jpg" alt="Tè servito con cura in un giardino genovese">
+        <div class="exp-card-body">
+          <h3>Tè e ceramica</h3>
+          <p>Tè sfuso servito con cura in tazze fatte a mano. Scegli la tua miscela, siediti, rallenta.</p>
+          <div class="exp-who">Teaps · Martina Geroni Ceramiche</div>
+        </div>
+      </div>
+      <div class="exp-card">
+        <img class="exp-card-img" src="exp-candles.jpg" alt="Candele artigianali La Strega del Castello">
+        <div class="exp-card-body">
+          <h3>Profumi e cose belle</h3>
+          <p>Candele artigianali, profumi naturali, cose da scoprire con calma. Annusa, prova, portati a casa quello che ti piace.</p>
+          <div class="exp-who">La Strega del Castello</div>
+        </div>
+      </div>
+      <div class="exp-card">
+        <img class="exp-card-img" src="exp-tarot.jpg" alt="Lettura di carte in un angolo intimo e accogliente">
+        <div class="exp-card-body">
+          <h3>Le carte, se ti va</h3>
+          <p>Un angolo tranquillo con Valeria. Una lettura breve, intima, senza teatro. Solo se sei curiosa.</p>
+          <div class="exp-who">Valeria</div>
+        </div>
+      </div>
+      <div class="exp-card">
+        <img class="exp-card-img" src="exp-artist.jpg" alt="Un'artista che dipinge dal vivo durante il pomeriggio">
+        <div class="exp-card-body">
+          <h3>Arte dal vivo</h3>
+          <p>Un'artista che crea durante il pomeriggio. Puoi guardarla, farle compagnia, o passarci accanto.</p>
+          <div class="exp-who">Artista ospite</div>
+        </div>
+      </div>
+    </div>
+    <p class="exp-more">E altre piccole sorprese da scoprire il giorno stesso.</p>
+  </section>
+
+  <!-- ========== PER CHI È ========== -->
+  <div class="quote-break fade-in">
+    <p class="quote-break-text">Ti ci vedi?</p>
+    <div class="quote-break-profiles">
+      <p class="quote-break-profile">Hai una <strong>vita piena</strong> — lavoro, casa, mille cose — e ti meriti un pomeriggio che non sia un altro impegno.</p>
+      <p class="quote-break-profile">Ti piacciono le <strong>cose fatte bene</strong>: un tè scelto con cura, un profumo artigianale, una chiacchierata vera.</p>
+      <p class="quote-break-profile">Non hai bisogno di conoscere nessuna per venire. Anzi — <strong>è il bello</strong>.</p>
+    </div>
+    <p class="quote-break-sub">Non è un corso, non è un networking, non è un aperitivo di corsa. È un pomeriggio pensato per farti stare bene.</p>
+  </div>
+
+  <!-- ========== CHI C'È DIETRO ========== -->
+  <section class="founder fade-in">
+    <div class="section-label">Chi c'è dietro</div>
+    <div class="founder-inner">
+      <div class="founder-photo">
+        <img src="alice.png" alt="Alice Fognani, fondatrice di EVA">
+      </div>
+      <div class="founder-body">
+        <p class="founder-text">
+          Mi chiamo <strong>Alice Fognani</strong>. Per 18 anni ho creato esperienze nel mondo degli eventi internazionali — in luoghi dove tutto doveva essere perfetto e, allo stesso tempo, profondamente umano. Poi un periodo di burnout mi ha fermata. E in quel silenzio ho capito cosa mancava a me, e a tante donne intorno: <strong>uno spazio per respirare, incontrarsi senza maschere, stare bene senza dover diventare qualcuno</strong>.
+        </p>
+        <p class="founder-text">
+          EVA nasce così — non come progetto, come necessità. Genova è la mia casa da oltre vent'anni. La amo perché è <strong>dura fuori e poetica dentro</strong> — e sogno una Genova dove una donna possa creare nuove amicizie a qualunque età, senza chiedere scusa.
+        </p>
+        <div class="founder-name">Alice Fognani</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== FAQ ========== -->
+  <div class="info-section fade-in">
+    <div class="info-inner">
+      <p class="transparency-text">
+        <strong>EVA è su invito</strong> — non per esclusività, ma per tenere il gruppo piccolo e l'atmosfera giusta. Nessun biglietto, nessun costo di ingresso. Ti chiedo solo di scrivermi, così ci conosciamo prima.
+      </p>
+      <div class="section-label">Domande pratiche</div>
+      <h2 class="section-title">Quello che vorresti sapere</h2>
+      <div class="faq-grid">
+        <div class="faq-item">
+          <h4>Quanto costa?</h4>
+          <p>Niente. L'ingresso è gratuito. Se qualcosa ti piace dagli artigiani, lo compri — ma zero obblighi.</p>
+        </div>
+        <div class="faq-item">
+          <h4>Posso venire da sola?</h4>
+          <p>Assolutamente. La maggior parte verrà da sola. È pensato proprio per questo.</p>
+        </div>
+        <div class="faq-item">
+          <h4>Dove, di preciso?</h4>
+          <p>Una dimora storica nel centro di Genova. L'indirizzo esatto te lo mando quando ci sentiamo.</p>
+        </div>
+        <div class="faq-item">
+          <h4>Posso portare un'amica?</h4>
+          <p>Sì, basta che mi scrivi prima. I posti sono circa 25, quindi meglio non arrivare a sorpresa.</p>
+        </div>
+        <div class="faq-item">
+          <h4>Devo restare tutto il tempo?</h4>
+          <p>No. Arrivi quando vuoi, te ne vai quando vuoi. Nessun programma fisso.</p>
+        </div>
+        <div class="faq-item">
+          <h4>È un evento commerciale?</h4>
+          <p>No. Gli artigiani sono ospiti, non venditori. È un pomeriggio tra persone, non una fiera.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== CTA ========== -->
+  <section class="cta fade-in">
+    <h2 class="section-title">Ci vediamo il 14 Marzo?</h2>
+    <p>Scrivimi su WhatsApp o via email — ti racconto tutto e ti mando l'indirizzo.</p>
+    <div class="cta-buttons">
+      <a href="https://wa.me/393485284327?text=Ciao%20Alice!%20Ho%20visto%20il%20sito%20di%20EVA%20e%20mi%20piacerebbe%20saperne%20di%20pi%C3%B9" class="btn btn-primary">Scrivimi su WhatsApp</a>
+      <a href="mailto:hello@eva.community?subject=Mi piacerebbe esserci a EVA Genova" class="btn btn-secondary">Oppure via email</a>
+    </div>
+    <p class="cta-note">Circa 25 posti. Quando è pieno, è pieno.</p>
+  </section>
+
+  <footer>
+    <div class="footer-logo">EVA</div>
+    <div class="footer-text">
+      14 Marzo 2026 — Genova
+    </div>
+  </footer>
+
+  <!-- Sticky WhatsApp (mobile) -->
+  <a href="https://wa.me/393485284327?text=Ciao%20Alice!%20Ho%20visto%20il%20sito%20di%20EVA%20e%20mi%20piacerebbe%20saperne%20di%20pi%C3%B9" class="sticky-wa">
+    <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+    Scrivimi
+  </a>
+
+  <script>
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+      });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+  </script>
+
+</body>
+</html>
