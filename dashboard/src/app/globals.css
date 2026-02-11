@@ -1,0 +1,96 @@
+@import "tailwindcss";
+
+:root {
+  /* Base — warm neutrals */
+  --cream: #FAF7F2;
+  --cream-alt: #F3EEE7;
+  --stone: #E8E2DA;
+  --warm-text: #1A1714;
+  --warm-muted: #5C544B;
+  --warm-light: #9A8E86;
+
+  /* Earthy accents */
+  --terracotta: #C67A5C;
+  --terracotta-hover: #B56A4C;
+  --sage: #8A9A7B;
+  --dusty-rose: #C4A0A0;
+  --ochre: #C9A84C;
+
+  /* Fresco richness */
+  --burgundy: #6B2D3E;
+  --muted-gold: #B59A5B;
+  --soft-blue: #7A8FA6;
+
+  /* Functional */
+  --background: var(--cream);
+  --foreground: var(--warm-text);
+  --sidebar-bg: #FFFFFF;
+  --sidebar-border: var(--stone);
+  --card-bg: #FFFFFF;
+  --card-border: var(--stone);
+  --input-border: var(--stone);
+  --input-focus: var(--terracotta);
+
+  /* Badge colors */
+  --badge-confirmed: var(--sage);
+  --badge-pending: var(--ochre);
+  --badge-cancelled: var(--dusty-rose);
+  --badge-attended: var(--muted-gold);
+  --badge-draft: var(--warm-light);
+  --badge-lead: var(--soft-blue);
+  --badge-inactive: var(--warm-light);
+}
+
+@theme inline {
+  --color-cream: var(--cream);
+  --color-cream-alt: var(--cream-alt);
+  --color-stone: var(--stone);
+  --color-warm-text: var(--warm-text);
+  --color-warm-muted: var(--warm-muted);
+  --color-warm-light: var(--warm-light);
+  --color-terracotta: var(--terracotta);
+  --color-terracotta-hover: var(--terracotta-hover);
+  --color-sage: var(--sage);
+  --color-dusty-rose: var(--dusty-rose);
+  --color-ochre: var(--ochre);
+  --color-burgundy: var(--burgundy);
+  --color-muted-gold: var(--muted-gold);
+  --color-soft-blue: var(--soft-blue);
+  --color-sidebar-bg: var(--sidebar-bg);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-card-bg: var(--card-bg);
+  --color-card-border: var(--card-border);
+  --color-input-border: var(--input-border);
+  --color-input-focus: var(--input-focus);
+  --font-serif: 'Cormorant Garamond', serif;
+  --font-sans: 'Outfit', sans-serif;
+  --font-body: 'Inter', sans-serif;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: 'Outfit', sans-serif;
+  font-weight: 300;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--cream-alt);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--stone);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--warm-light);
+}
+
+/* Focus ring */
+*:focus-visible {
+  outline: 2px solid var(--terracotta);
+  outline-offset: 2px;
+}
