@@ -61,21 +61,25 @@ export default function DashboardPage() {
           title="Contatti totali"
           value={stats.total_contacts}
           icon={Users}
+          href="/dashboard/contacts"
         />
         <StatCard
           title="Iscritte mailing"
           value={stats.mailing_subscribers}
           icon={Mail}
+          href="/dashboard/mailing"
         />
         <StatCard
           title="Prossimi eventi"
           value={stats.upcoming_events}
           icon={Calendar}
+          href="/dashboard/events"
         />
         <StatCard
           title="Ricavi totali"
           value={formatCurrency(stats.total_revenue_cents)}
           icon={CreditCard}
+          href="/dashboard/payments"
         />
       </div>
 

@@ -1424,7 +1424,7 @@
       btn.textContent = 'Invio in corso...';
 
       try {
-        const res = await fetch('http://localhost:3010/api/registration', {
+        const res = await fetch('https://dashboard-two-roan-55.vercel.app/api/registration', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ first_name: name, email: email, gdpr_consent: true })
