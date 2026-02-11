@@ -119,8 +119,44 @@
     .site-nav.scrolled .nav-partecipa {
       color: #c4a882 !important;
     }
+    .nav-toggle {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0.5rem;
+      margin-left: auto;
+    }
+    .nav-toggle span {
+      display: block;
+      width: 20px;
+      height: 1.5px;
+      background: #fff;
+      margin: 5px 0;
+      transition: all 0.3s ease;
+    }
+    .site-nav.scrolled .nav-toggle span {
+      background: var(--warm-text);
+    }
     @media (max-width: 768px) {
-      .nav-links { display: none; }
+      .nav-toggle { display: block; }
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        flex-direction: column;
+        background: var(--dark-burgundy);
+        padding: 1.5rem 2rem;
+        gap: 1.2rem;
+      }
+      .site-nav.scrolled .nav-links {
+        background: var(--cream);
+      }
+      .nav-links.open {
+        display: flex;
+      }
     }
 
     /* ==============================
@@ -501,7 +537,7 @@
     .mosaic-img:hover img { transform: scale(1.03); }
     @media (max-width: 600px) {
       .mosaic {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr 1fr;
       }
     }
 
@@ -622,8 +658,19 @@
         grid-template-columns: 1fr;
       }
       .dimora-layout .mosaic {
-        max-width: 400px;
+        grid-template-columns: 1fr 1fr;
+        max-width: 100%;
         margin: 0 auto;
+      }
+      .dimora-layout .mosaic-img {
+        aspect-ratio: 1 / 1;
+      }
+      .dimora-layout .mosaic-img img {
+        object-fit: cover;
+        height: 100%;
+      }
+      .dimora-map {
+        grid-template-columns: 1fr 1fr;
       }
     }
     @media (max-width: 480px) {
@@ -1034,6 +1081,16 @@
       .hero {
         background-attachment: scroll;
       }
+      .hero-line1 {
+        letter-spacing: 0.2em;
+        font-size: 0.7rem;
+      }
+      .hero-line2 {
+        white-space: normal;
+        font-size: 1.1rem;
+        text-align: center;
+        padding: 0 1rem;
+      }
     }
   </style>
 </head>
@@ -1042,7 +1099,10 @@
   <!-- ========== NAVIGATION ========== -->
   <nav class="site-nav" id="siteNav">
     <a href="#" class="nav-logo">EVA</a>
-    <div class="nav-links">
+    <button class="nav-toggle" id="navToggle" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="nav-links" id="navLinks">
       <a href="#evento">L'Incontro</a>
       <a href="#alice">Chi Siamo</a>
       <a href="#contatti" class="nav-partecipa">Partecipa</a>
@@ -1333,6 +1393,16 @@
     };
     window.addEventListener('scroll', onScroll, { passive: true });
     onScroll();
+
+    /* Mobile nav toggle */
+    document.getElementById('navToggle').addEventListener('click', function() {
+      document.getElementById('navLinks').classList.toggle('open');
+    });
+    document.querySelectorAll('#navLinks a').forEach(function(a) {
+      a.addEventListener('click', function() {
+        document.getElementById('navLinks').classList.remove('open');
+      });
+    });
 
     /* Registration form */
     const evaForm = document.getElementById('evaForm');
