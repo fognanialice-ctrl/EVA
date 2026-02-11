@@ -8,6 +8,7 @@ import {
   Calendar,
   CreditCard,
   Mail,
+  Instagram,
   Settings,
   LogOut,
 } from 'lucide-react'
@@ -20,6 +21,7 @@ const navigation = [
   { label: 'Eventi', href: '/dashboard/events', icon: Calendar },
   { label: 'Pagamenti', href: '/dashboard/payments', icon: CreditCard },
   { label: 'Mailing', href: '/dashboard/mailing', icon: Mail },
+  { label: 'Instagram', href: '/dashboard/instagram', icon: Instagram },
   { label: 'Impostazioni', href: '/dashboard/settings', icon: Settings },
 ]
 

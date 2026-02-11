@@ -13,13 +13,17 @@ CREATE TYPE payment_method AS ENUM ('paypal', 'bank_transfer', 'cash', 'other');
 CREATE TYPE payment_status AS ENUM ('pending', 'completed', 'failed', 'refunded');
 
 -- Updated_at trigger function
-CREATE OR REPLACE FUNCTION update_updated_at_column()
-RETURNS TRIGGER AS $$
+CREATE OR REPLACE FUNCTION public.update_updated_at_column()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
 BEGIN
-  NEW.updated_at = now();
+  NEW.updated_at = NOW();
   RETURN NEW;
 END;
-$$ LANGUAGE plpgsql;
+$$;
 
 -- ========== CONTACTS ==========
 CREATE TABLE contacts (
@@ -172,7 +176,7 @@ CREATE INDEX idx_activity_created ON activity_log(created_at DESC);
 CREATE INDEX idx_activity_entity ON activity_log(entity_type, entity_id);
 
 -- ========== VIEWS ==========
-CREATE VIEW event_registration_summary AS
+CREATE VIEW event_registration_summary WITH (security_invoker = on) AS
 SELECT
   e.id AS event_id,
   e.title,
@@ -189,7 +193,7 @@ LEFT JOIN event_registrations er ON e.id = er.event_id
 LEFT JOIN payments p ON e.id = p.event_id
 GROUP BY e.id, e.title, e.event_date, e.capacity;
 
-CREATE VIEW dashboard_stats AS
+CREATE VIEW dashboard_stats WITH (security_invoker = on) AS
 SELECT
   (SELECT COUNT(*) FROM contacts) AS total_contacts,
   (SELECT COUNT(*) FROM contacts WHERE subscribed_to_mailing = true) AS mailing_subscribers,

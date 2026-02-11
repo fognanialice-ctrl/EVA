@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#C4704B">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="EVA">
+  <meta name="description" content="EVA — La comunità delle donne che scelgono coraggio e autenticità">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" href="/icons/icon-192.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/icons/icon-192.svg">
+  <title>EVA Community</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cream: #F5F0E8;
+      --warm-white: #FAF7F2;
+      --terracotta: #C4704B;
+      --terracotta-light: #D4896A;
+      --olive: #7A8B6F;
+      --olive-light: #95A688;
+      --deep-brown: #3D2B1F;
+      --warm-gray: #8B7E74;
+      --gold: #C9A96E;
+      --gold-light: #D4BC8E;
+      --blush: #E8D5C8;
+      --sand: #DDD3C4;
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    
+    body {
+      font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--cream);
+      color: var(--deep-brown);
+      overflow: hidden;
+      height: 100dvh;
+      position: fixed;
+      width: 100%;
+    }
+
+    .app {
+      height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      max-width: 500px;
+      margin: 0 auto;
+      background: var(--cream);
+    }
+
+    /* Scrollable content area */
+    .screen-content {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+      padding: 0 20px 20px;
+      padding-top: calc(var(--safe-top) + 8px);
+    }
+
+    /* Bottom nav */
+    .bottom-nav {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      background: rgba(250, 247, 242, 0.95);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-top: 1px solid var(--sand);
+      padding: 8px 10px;
+      padding-bottom: calc(var(--safe-bottom) + 8px);
+      flex-shrink: 0;
+    }
+
+    .nav-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      padding: 4px 12px;
+      transition: all 0.2s ease;
+    }
+
+    .nav-btn span {
+      font-size: 9px;
+      letter-spacing: 0.3px;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .nav-btn.active span { color: var(--terracotta); font-weight: 600; }
+    .nav-btn:not(.active) span { color: var(--warm-gray); }
+    .nav-btn svg { transition: all 0.2s ease; }
+
+    /* Typography */
+    h1.page-title {
+      font-size: 26px;
+      font-family: 'Playfair Display', serif;
+      font-weight: 600;
+      margin: 16px 0 4px;
+    }
+    
+    p.page-subtitle {
+      font-size: 13px;
+      color: var(--warm-gray);
+      margin-bottom: 20px;
+    }
+
+    .serif { font-family: 'Playfair Display', serif; }
+
+    /* Cards */
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 18px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 12px rgba(61,43,31,0.05);
+      border: 1px solid var(--sand);
+    }
+
+    .card-sm {
+      background: white;
+      border-radius: 14px;
+      padding: 14px 16px;
+      margin-bottom: 10px;
+      box-shadow: 0 1px 8px rgba(61,43,31,0.04);
+      border: 1px solid var(--sand);
+    }
+
+    /* Buttons */
+    .btn-primary {
+      background: var(--terracotta);
+      color: white;
+      border: none;
+      border-radius: 20px;
+      padding: 10px 22px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary:active { transform: scale(0.96); opacity: 0.9; }
+
+    .btn-full {
+      width: 100%;
+      padding: 16px;
+      border-radius: 14px;
+      font-size: 15px;
+    }
+
+    .btn-booked {
+      background: var(--olive);
+    }
+
+    .btn-text {
+      background: none;
+      border: none;
+      color: var(--terracotta);
+      font-size: 13px;
+      font-family: 'DM Sans', sans-serif;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    .btn-back {
+      background: none;
+      border: none;
+      color: var(--terracotta);
+      font-size: 14px;
+      font-family: 'DM Sans', sans-serif;
+      cursor: pointer;
+      padding: 16px 0 8px;
+      font-weight: 500;
+    }
+
+    /* Avatars */
+    .avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: white;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    .avatar-sm { width: 24px; height: 24px; font-size: 10px; }
+    .avatar-lg { width: 42px; height: 42px; font-size: 16px; }
+    .avatar-xl { width: 80px; height: 80px; font-size: 28px; font-family: 'Playfair Display', serif; }
+
+    .avatar-stack { display: flex; }
+    .avatar-stack .avatar-sm { margin-left: -6px; border: 2px solid white; }
+    .avatar-stack .avatar-sm:first-child { margin-left: 0; }
+
+    /* Date badge */
+    .date-badge {
+      width: 56px;
+      height: 56px;
+      border-radius: 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .date-badge-day {
+      color: white;
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .date-badge-month {
+      color: rgba(255,255,255,0.8);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* Tag */
+    .tag {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    /* Section headers */
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-size: 17px;
+      font-family: 'Playfair Display', serif;
+      font-weight: 600;
+    }
+
+    /* Info row */
+    .info-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      background: white;
+      border-radius: 12px;
+      border: 1px solid var(--sand);
+      margin-bottom: 8px;
+    }
+
+    .info-row-icon { font-size: 18px; }
+    .info-row-label { font-size: 10px; color: var(--warm-gray); text-transform: uppercase; letter-spacing: 1px; }
+    .info-row-value { font-size: 14px; font-weight: 500; margin-top: 2px; }
+
+    /* Resource grid */
+    .resource-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .resource-card {
+      background: white;
+      border-radius: 16px;
+      padding: 20px 16px;
+      box-shadow: 0 2px 12px rgba(61,43,31,0.05);
+      border: 1px solid var(--sand);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      text-align: center;
+      transition: transform 0.2s ease;
+    }
+
+    .resource-card:active { transform: scale(0.97); }
+
+    .resource-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+    }
+
+    /* Horizontal scroll */
+    .h-scroll {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      scrollbar-width: none;
+    }
+    .h-scroll::-webkit-scrollbar { display: none; }
+
+    .h-scroll-card {
+      min-width: 110px;
+      background: white;
+      border-radius: 14px;
+      padding: 16px 14px;
+      box-shadow: 0 1px 8px rgba(61,43,31,0.04);
+      border: 1px solid var(--sand);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+
+    /* Textarea */
+    .post-input {
+      flex: 1;
+      border: none;
+      background: transparent;
+      resize: none;
+      font-size: 13px;
+      color: var(--deep-brown);
+      font-family: 'DM Sans', sans-serif;
+      outline: none;
+      min-height: 40px;
+      line-height: 1.5;
+    }
+
+    /* Like button */
+    .like-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 13px;
+      font-family: 'DM Sans', sans-serif;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: color 0.2s ease;
+    }
+
+    /* Profile settings row */
+    .settings-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 16px;
+      background: white;
+      border-radius: 14px;
+      margin-bottom: 8px;
+      border: 1px solid var(--sand);
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .settings-row:active { transform: scale(0.98); }
+
+    /* Membership card */
+    .membership-card {
+      background: linear-gradient(135deg, #3D2B1F 0%, #5A3D2E 100%);
+      border-radius: 20px;
+      padding: 22px;
+      margin-top: 12px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .membership-card::before {
+      content: '';
+      position: absolute;
+      top: -20px;
+      right: -20px;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: var(--terracotta);
+      opacity: 0.15;
+    }
+
+    .membership-card::after {
+      content: '';
+      position: absolute;
+      bottom: -30px;
+      left: 20px;
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: var(--gold);
+      opacity: 0.1;
+    }
+
+    /* Screen transitions */
+    .screen { display: none; }
+    .screen.active { display: block; animation: fadeIn 0.25s ease; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Event detail hero */
+    .event-hero {
+      height: 180px;
+      border-radius: 20px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Stats row */
+    .stats-row {
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+      margin: 24px 0;
+      padding: 20px;
+      background: white;
+      border-radius: 16px;
+      border: 1px solid var(--sand);
+    }
+
+    .stat-value {
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      color: var(--warm-gray);
+      margin-top: 2px;
+    }
+
+    /* Install banner */
+    .install-banner {
+      display: none;
+      background: linear-gradient(135deg, var(--deep-brown), #5A3D2E);
+      border-radius: 16px;
+      padding: 16px 18px;
+      margin-bottom: 16px;
+      color: var(--cream);
+    }
+
+    .install-banner.show { display: block; }
+
+    .install-btn {
+      background: var(--terracotta);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 10px 20px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      margin-top: 10px;
+    }
+
+    /* Toast notification */
+    .toast {
+      position: fixed;
+      bottom: 100px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--deep-brown);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 500;
+      opacity: 0;
+      transition: all 0.3s ease;
+      pointer-events: none;
+      z-index: 100;
+      max-width: 300px;
+      text-align: center;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+  </style>
+</head>
+<body>
+  <div class="app" id="app">
+    <!-- Main content area -->
+    <div class="screen-content" id="screenContent">
+
+      <!-- ==================== HOME ==================== -->
+      <div class="screen active" id="screen-home">
+        <!-- Header -->
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:16px 0 8px">
+          <div>
+            <p style="font-size:13px; color:var(--warm-gray); letter-spacing:0.5px" id="greeting">Buongiorno</p>
+            <h1 style="font-size:26px; margin:2px 0 0" class="serif">Eva ✦</h1>
+          </div>
+          <div class="avatar-lg" style="background:linear-gradient(135deg, var(--terracotta), var(--gold))">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 3C12 3 11 1 13 0.5" stroke="#7A8B6F" stroke-width="1.5" stroke-linecap="round"/><path d="M17.5 7C19.5 7 22 9.5 22 13C22 17 19 22 16.5 22C15.5 22 14.5 21 12 21C9.5 21 8.5 22 7.5 22C5 22 2 17 2 13C2 9.5 4.5 7 6.5 7C8 7 9.5 8.5 12 8.5C14.5 8.5 16 7 17.5 7Z" fill="white" opacity="0.9"/></svg>
+          </div>
+        </div>
+
+        <!-- Install banner -->
+        <div class="install-banner" id="installBanner">
+          <p style="font-size:14px; font-weight:600" class="serif">Aggiungi EVA alla Home</p>
+          <p style="font-size:12px; opacity:0.8; margin-top:4px">Accedi all'app con un tocco, come un'app nativa</p>
+          <button class="install-btn" id="installBtn">Installa</button>
+        </div>
+
+        <!-- Membership card -->
+        <div class="membership-card">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; position:relative; z-index:1">
+            <div>
+              <p style="color:var(--gold-light); font-size:11px; letter-spacing:2px; text-transform:uppercase">Membro Fondatrice</p>
+              <p style="color:var(--cream); font-size:20px; margin-top:6px" class="serif">EVA Community</p>
+            </div>
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M17.5 7C19.5 7 22 9.5 22 13C22 17 19 22 16.5 22C15.5 22 14.5 21 12 21C9.5 21 8.5 22 7.5 22C5 22 2 17 2 13C2 9.5 4.5 7 6.5 7C8 7 9.5 8.5 12 8.5C14.5 8.5 16 7 17.5 7Z" fill="#D4BC8E" opacity="0.8"/></svg>
+          </div>
+          <div style="display:flex; gap:24px; margin-top:18px; position:relative; z-index:1">
+            <div>
+              <p style="color:var(--gold-light); font-size:10px; letter-spacing:1px; text-transform:uppercase">Dal</p>
+              <p style="color:var(--cream); font-size:14px; margin-top:2px">Mar 2026</p>
+            </div>
+            <div>
+              <p style="color:var(--gold-light); font-size:10px; letter-spacing:1px; text-transform:uppercase">Eventi</p>
+              <p style="color:var(--cream); font-size:14px; margin-top:2px">3 questo mese</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Next event -->
+        <div style="margin-top:24px">
+          <div class="section-header">
+            <h2 class="section-title">Prossimo Evento</h2>
+            <button class="btn-text" onclick="switchTab('events')">Vedi tutti →</button>
+          </div>
+          <div class="card" onclick="showEventDetail(0)" style="cursor:pointer">
+            <div style="display:flex; gap:14px; align-items:flex-start">
+              <div class="date-badge" style="background:linear-gradient(135deg, var(--terracotta), var(--terracotta-light))">
+                <span class="date-badge-day">15</span>
+                <span class="date-badge-month">Mar</span>
+              </div>
+              <div style="flex:1">
+                <span class="tag" style="color:var(--terracotta)">✦ INAUGURALE</span>
+                <h3 style="font-size:16px; margin:4px 0" class="serif">La Bellezza Che Nutre</h3>
+                <p style="font-size:12px; color:var(--warm-gray)">15:00 · Dimora Almayer</p>
+              </div>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:14px; padding-top:14px; border-top:1px solid var(--sand)">
+              <div style="display:flex; align-items:center; gap:6px">
+                <div class="avatar-stack">
+                  <div class="avatar avatar-sm" style="background:var(--olive)">G</div>
+                  <div class="avatar avatar-sm" style="background:var(--terracotta)">F</div>
+                  <div class="avatar avatar-sm" style="background:var(--gold)">S</div>
+                </div>
+                <span style="font-size:11px; color:var(--warm-gray)">8 posti rimasti</span>
+              </div>
+              <button class="btn-primary" style="padding:8px 18px; font-size:12px" onclick="event.stopPropagation(); bookEvent(0)">Prenota</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Community highlights -->
+        <div style="margin-top:24px">
+          <div class="section-header">
+            <h2 class="section-title">Dal Salotto</h2>
+            <button class="btn-text" onclick="switchTab('community')">Entra →</button>
+          </div>
+          <div id="homePosts"></div>
+        </div>
+
+        <!-- Resources quick access -->
+        <div style="margin-top:24px; padding-bottom:20px">
+          <div class="section-header">
+            <h2 class="section-title">Risorse</h2>
+            <button class="btn-text" onclick="switchTab('resources')">Tutte →</button>
+          </div>
+          <div class="h-scroll" id="homeResources"></div>
+        </div>
+      </div>
+
+      <!-- ==================== EVENTS ==================== -->
+      <div class="screen" id="screen-events">
+        <div id="eventsListView">
+          <h1 class="page-title">Eventi</h1>
+          <p class="page-subtitle">Esperienze pensate per nutrire corpo e anima</p>
+          <div id="eventsList"></div>
+        </div>
+        <div id="eventDetailView" style="display:none"></div>
+      </div>
+
+      <!-- ==================== COMMUNITY ==================== -->
+      <div class="screen" id="screen-community">
+        <h1 class="page-title">Il Salotto</h1>
+        <p class="page-subtitle">Il nostro spazio di connessione autentica</p>
+
+        <!-- New post -->
+        <div class="card-sm" style="margin-bottom:16px">
+          <div style="display:flex; gap:10px; align-items:flex-start">
+            <div class="avatar" style="width:34px; height:34px; font-size:14px; background:linear-gradient(135deg, var(--terracotta), var(--gold))">E</div>
+            <textarea class="post-input" id="newPostInput" placeholder="Condividi un pensiero..."></textarea>
+          </div>
+          <div id="postBtnWrap" style="display:none; justify-content:flex-end; margin-top:8px">
+            <button class="btn-primary" style="padding:7px 18px; font-size:12px" onclick="addPost()">Pubblica</button>
+          </div>
+        </div>
+
+        <div id="communityPosts"></div>
+      </div>
+
+      <!-- ==================== RESOURCES ==================== -->
+      <div class="screen" id="screen-resources">
+        <h1 class="page-title">Risorse</h1>
+        <p class="page-subtitle">Tutto ciò che ti serve per vivere con intenzione</p>
+        <div class="resource-grid" id="resourcesGrid"></div>
+      </div>
+
+      <!-- ==================== PROFILE ==================== -->
+      <div class="screen" id="screen-profile">
+        <div style="display:flex; flex-direction:column; align-items:center; padding-top:24px">
+          <div class="avatar avatar-xl" style="background:linear-gradient(135deg, var(--terracotta), var(--gold))">E</div>
+          <h1 style="font-size:22px; margin:12px 0 2px" class="serif">Eva</h1>
+          <p style="font-size:13px; color:var(--terracotta); font-weight:500">Fondatrice ✦</p>
+          <p style="font-size:12px; color:var(--warm-gray); margin-top:4px">Membro dal Marzo 2026</p>
+        </div>
+
+        <div class="stats-row">
+          <div style="text-align:center">
+            <p class="stat-value">3</p>
+            <p class="stat-label">Eventi</p>
+          </div>
+          <div style="text-align:center">
+            <p class="stat-value">12</p>
+            <p class="stat-label">Post</p>
+          </div>
+          <div style="text-align:center">
+            <p class="stat-value">18</p>
+            <p class="stat-label">Connessioni</p>
+          </div>
+        </div>
+
+        <div class="settings-row" onclick="showToast('Impostazioni in arrivo!')">
+          <span style="font-size:22px">⚙️</span>
+          <div style="flex:1">
+            <p style="font-size:14px; font-weight:500">Impostazioni</p>
+            <p style="font-size:11px; color:var(--warm-gray); margin-top:2px">Notifiche, privacy, account</p>
+          </div>
+          <span style="color:var(--sand); font-size:18px">›</span>
+        </div>
+        <div class="settings-row" onclick="showToast('Gestione abbonamento in arrivo!')">
+          <span style="font-size:22px">💳</span>
+          <div style="flex:1">
+            <p style="font-size:14px; font-weight:500">Abbonamento</p>
+            <p style="font-size:11px; color:var(--warm-gray); margin-top:2px">€25/mese · Rinnovo 15 Apr</p>
+          </div>
+          <span style="color:var(--sand); font-size:18px">›</span>
+        </div>
+        <div class="settings-row" onclick="switchTab('events')">
+          <span style="font-size:22px">📖</span>
+          <div style="flex:1">
+            <p style="font-size:14px; font-weight:500">I Miei Eventi</p>
+            <p style="font-size:11px; color:var(--warm-gray); margin-top:2px">Storico e prenotazioni</p>
+          </div>
+          <span style="color:var(--sand); font-size:18px">›</span>
+        </div>
+        <div class="settings-row" onclick="showToast('Supporto in arrivo!')">
+          <span style="font-size:22px">💬</span>
+          <div style="flex:1">
+            <p style="font-size:14px; font-weight:500">Supporto</p>
+            <p style="font-size:11px; color:var(--warm-gray); margin-top:2px">Hai bisogno di aiuto?</p>
+          </div>
+          <span style="color:var(--sand); font-size:18px">›</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom navigation -->
+    <nav class="bottom-nav">
+      <button class="nav-btn active" data-tab="home" onclick="switchTab('home')">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12L12 3L21 12" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 10V20C5 20.5 5.5 21 6 21H10V15H14V21H18C18.5 21 19 20.5 19 20V10" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>Home</span>
+      </button>
+      <button class="nav-btn" data-tab="events" onclick="switchTab('events')">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10H21"/><path d="M8 2V6"/><path d="M16 2V6"/></svg>
+        <span>Eventi</span>
+      </button>
+      <button class="nav-btn" data-tab="community" onclick="switchTab('community')">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="7" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 21V18C3 15.8 4.8 14 7 14H11C13.2 14 15 15.8 15 18V21"/><path d="M15 14H17C18.7 14 20 15.3 20 17V21"/></svg>
+        <span>Salotto</span>
+      </button>
+      <button class="nav-btn" data-tab="resources" onclick="switchTab('resources')">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5V4.5C4 3.7 4.7 3 5.5 3H18.5C19.3 3 20 3.7 20 4.5V19.5C20 20.3 19.3 21 18.5 21H5.5C4.7 21 4 20.3 4 19.5Z"/><path d="M8 7H16"/><path d="M8 11H16"/><path d="M8 15H12"/></svg>
+        <span>Risorse</span>
+      </button>
+      <button class="nav-btn" data-tab="profile" onclick="switchTab('profile')">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21V19C4 16.8 5.8 15 8 15H16C18.2 15 20 16.8 20 19V21"/></svg>
+        <span>Profilo</span>
+      </button>
+    </nav>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+  </div>
+
+  <script>
+    // ===== DATA =====
+    const events = [
+      { id: 0, title: "La Bellezza Che Nutre", date: "15 Mar", time: "15:00", location: "Dimora Almayer", spots: 8, total: 25, price: "€25", tag: "Inaugurale", tagColor: "#C4704B", desc: "Un pomeriggio di bellezza, artigianato e connessione autentica. Tarocchi con Valeria, skincare naturale, ceramica con Martina Geroni, buffet curato e un momento musicale speciale con Andrea Celeste." },
+      { id: 1, title: "Passeggiata & Aperitivo", date: "28 Mar", time: "17:30", location: "Centro Storico", spots: 15, total: 20, price: "€15", tag: "Outdoor", tagColor: "#7A8B6F", desc: "Scopriamo insieme gli angoli nascosti di Genova, tra caruggi e storie. Chiudiamo con un aperitivo in un locale speciale." },
+      { id: 2, title: "Ceramica con Martina", date: "12 Apr", time: "10:00", location: "Bottega Geroni", spots: 4, total: 10, price: "€35", tag: "Workshop", tagColor: "#C9A96E", desc: "Mani in argilla, cuore in ascolto. Un workshop intimo per creare qualcosa di bello con le proprie mani." },
+    ];
+
+    let posts = [
+      { id: 1, author: "Giulia M.", avatar: "G", time: "2h fa", text: "Qualcuna conosce un buon ceramista a Nervi? Vorrei iniziare un corso 🏺", likes: 7, replies: 3, color: "#7A8B6F" },
+      { id: 2, author: "Francesca R.", avatar: "F", time: "5h fa", text: "Il libro che abbiamo discusso giovedì mi ha cambiato la prospettiva. Grazie per la raccomandazione! 📖", likes: 12, replies: 5, color: "#C4704B" },
+      { id: 3, author: "Sara L.", avatar: "S", time: "1g fa", text: "Cerco compagna per il Cammino di Santiago a settembre. Chi viene? 🚶‍♀️", likes: 18, replies: 8, color: "#C9A96E" },
+    ];
+
+    const resources = [
+      { id: 1, title: "I 10 Valori di EVA", type: "Manifesto", icon: "📜", color: "#C4704B" },
+      { id: 2, title: "Guida: Il Tuo Primo Evento", type: "Guida", icon: "✨", color: "#7A8B6F" },
+      { id: 3, title: "Playlist del Salotto", type: "Musica", icon: "🎵", color: "#C9A96E" },
+      { id: 4, title: "Artigiane di Genova", type: "Directory", icon: "🤲", color: "#8B7E74" },
+      { id: 5, title: "Letture Consigliate", type: "Libri", icon: "📚", color: "#D4896A" },
+      { id: 6, title: "Ricette dal Salotto", type: "Cucina", icon: "🍷", color: "#95A688" },
+    ];
+
+    const bookedEvents = {};
+    const likedPosts = {};
+
+    // ===== NAVIGATION =====
+    function switchTab(tab) {
+      // Reset event detail view when navigating
+      if (tab === 'events') {
+        document.getElementById('eventsListView').style.display = 'block';
+        document.getElementById('eventDetailView').style.display = 'none';
+      }
+
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById('screen-' + tab).classList.add('active');
+
+      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+      document.querySelector(`.nav-btn[data-tab="${tab}"]`).classList.add('active');
+
+      // Update nav icon colors
+      document.querySelectorAll('.nav-btn').forEach(b => {
+        const isActive = b.classList.contains('active');
+        b.querySelectorAll('svg').forEach(svg => {
+          svg.setAttribute('stroke', isActive ? '#C4704B' : '#8B7E74');
+        });
+      });
+
+      document.getElementById('screenContent').scrollTop = 0;
+    }
+
+    // ===== GREETING =====
+    function updateGreeting() {
+      const hour = new Date().getHours();
+      const el = document.getElementById('greeting');
+      if (hour < 12) el.textContent = 'Buongiorno';
+      else if (hour < 18) el.textContent = 'Buon pomeriggio';
+      else el.textContent = 'Buonasera';
+    }
+
+    // ===== TOAST =====
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
+
+    // ===== EVENTS =====
+    function renderEventsList() {
+      const el = document.getElementById('eventsList');
+      el.innerHTML = events.map(e => `
+        <div class="card" onclick="showEventDetail(${e.id})" style="cursor:pointer">
+          <div style="display:flex; gap:14px">
+            <div class="date-badge" style="background:linear-gradient(135deg, ${e.tagColor}, ${e.tagColor}CC); width:52px; height:52px">
+              <span class="date-badge-day" style="font-size:16px">${e.date.split(' ')[0]}</span>
+              <span class="date-badge-month" style="font-size:9px">${e.date.split(' ')[1]}</span>
+            </div>
+            <div style="flex:1">
+              <span class="tag" style="color:${e.tagColor}">${e.tag}</span>
+              <h3 style="font-size:15px; margin:3px 0" class="serif">${e.title}</h3>
+              <p style="font-size:11px; color:var(--warm-gray)">${e.time} · ${e.location}</p>
+            </div>
+            <div style="text-align:right; flex-shrink:0">
+              <span style="font-size:16px; font-weight:700">${e.price}</span>
+              <p style="font-size:10px; color:var(--warm-gray); margin-top:2px">${e.spots} posti</p>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function showEventDetail(id) {
+      const e = events[id];
+      const isBooked = bookedEvents[id];
+
+      document.getElementById('eventsListView').style.display = 'none';
+      const detail = document.getElementById('eventDetailView');
+      detail.style.display = 'block';
+      detail.innerHTML = `
+        <button class="btn-back" onclick="hideEventDetail()">← Indietro</button>
+        <div class="event-hero" style="background:linear-gradient(135deg, ${e.tagColor}22, ${e.tagColor}44)">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none">
+            <path d="M17.5 7C19.5 7 22 9.5 22 13C22 17 19 22 16.5 22C15.5 22 14.5 21 12 21C9.5 21 8.5 22 7.5 22C5 22 2 17 2 13C2 9.5 4.5 7 6.5 7C8 7 9.5 8.5 12 8.5C14.5 8.5 16 7 17.5 7Z" fill="${e.tagColor}" opacity="0.6"/>
+          </svg>
+        </div>
+        <span class="tag" style="color:${e.tagColor}; letter-spacing:1.5px">✦ ${e.tag.toUpperCase()}</span>
+        <h1 style="font-size:26px; margin:6px 0" class="serif">${e.title}</h1>
+        <p style="font-size:14px; color:var(--warm-gray); margin-bottom:20px; line-height:1.6">${e.desc}</p>
+
+        <div class="info-row"><span class="info-row-icon">📅</span><div><p class="info-row-label">Data</p><p class="info-row-value">${e.date} 2026</p></div></div>
+        <div class="info-row"><span class="info-row-icon">🕐</span><div><p class="info-row-label">Orario</p><p class="info-row-value">${e.time}</p></div></div>
+        <div class="info-row"><span class="info-row-icon">📍</span><div><p class="info-row-label">Luogo</p><p class="info-row-value">${e.location}</p></div></div>
+        <div class="info-row"><span class="info-row-icon">👥</span><div><p class="info-row-label">Posti</p><p class="info-row-value">${e.spots} rimasti su ${e.total}</p></div></div>
+        <div class="info-row" style="margin-bottom:24px"><span class="info-row-icon">✦</span><div><p class="info-row-label">Contributo</p><p class="info-row-value">${e.price}</p></div></div>
+
+        <button class="btn-primary btn-full ${isBooked ? 'btn-booked' : ''}" onclick="bookEvent(${id})">
+          ${isBooked ? '✓ Prenotato' : 'Prenota il tuo posto'}
+        </button>
+      `;
+
+      document.getElementById('screenContent').scrollTop = 0;
+    }
+
+    function hideEventDetail() {
+      document.getElementById('eventsListView').style.display = 'block';
+      document.getElementById('eventDetailView').style.display = 'none';
+    }
+
+    function bookEvent(id) {
+      bookedEvents[id] = !bookedEvents[id];
+      if (bookedEvents[id]) {
+        showToast('✓ Prenotazione confermata!');
+      } else {
+        showToast('Prenotazione annullata');
+      }
+      // Re-render if in detail view
+      if (document.getElementById('eventDetailView').style.display !== 'none') {
+        showEventDetail(id);
+      }
+    }
+
+    // ===== COMMUNITY =====
+    function renderPosts(containerId, limit) {
+      const el = document.getElementById(containerId);
+      const displayPosts = limit ? posts.slice(0, limit) : posts;
+      el.innerHTML = displayPosts.map(p => `
+        <div class="card-sm">
+          <div style="display:flex; gap:10px; align-items:center">
+            <div class="avatar" style="background:${p.color}">${p.avatar}</div>
+            <div>
+              <span style="font-size:13px; font-weight:600">${p.author}</span>
+              <span style="font-size:11px; color:var(--warm-gray); margin-left:8px">${p.time}</span>
+            </div>
+          </div>
+          <p style="font-size:14px; margin:10px 0; line-height:1.6">${p.text}</p>
+          <div style="display:flex; gap:20px; padding-top:10px; border-top:1px solid var(--sand)">
+            <button class="like-btn" style="color:${likedPosts[p.id] ? 'var(--terracotta)' : 'var(--warm-gray)'}" onclick="toggleLike(${p.id})">
+              ${likedPosts[p.id] ? '♥' : '♡'} ${p.likes + (likedPosts[p.id] ? 1 : 0)}
+            </button>
+            <span style="font-size:13px; color:var(--warm-gray); display:flex; align-items:center; gap:4px">💬 ${p.replies}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function toggleLike(id) {
+      likedPosts[id] = !likedPosts[id];
+      renderPosts('communityPosts');
+      renderPosts('homePosts', 2);
+    }
+
+    function addPost() {
+      const input = document.getElementById('newPostInput');
+      const text = input.value.trim();
+      if (!text) return;
+
+      posts.unshift({
+        id: Date.now(),
+        author: "Eva",
+        avatar: "E",
+        time: "ora",
+        text: text,
+        likes: 0,
+        replies: 0,
+        color: "#C4704B"
+      });
+
+      input.value = '';
+      document.getElementById('postBtnWrap').style.display = 'none';
+      renderPosts('communityPosts');
+      renderPosts('homePosts', 2);
+      showToast('Pubblicato!');
+    }
+
+    // Post input toggle
+    document.getElementById('newPostInput').addEventListener('input', function() {
+      document.getElementById('postBtnWrap').style.display = this.value.trim() ? 'flex' : 'none';
+    });
+
+    // ===== RESOURCES =====
+    function renderResources() {
+      // Grid view
+      document.getElementById('resourcesGrid').innerHTML = resources.map(r => `
+        <div class="resource-card" onclick="showToast('${r.title} — in arrivo!')">
+          <div class="resource-icon" style="background:${r.color}15">${r.icon}</div>
+          <div>
+            <h3 style="font-size:13px; font-weight:600">${r.title}</h3>
+            <p style="font-size:10px; color:${r.color}; font-weight:600; text-transform:uppercase; letter-spacing:1px; margin-top:4px">${r.type}</p>
+          </div>
+        </div>
+      `).join('');
+
+      // Home horizontal scroll
+      document.getElementById('homeResources').innerHTML = resources.slice(0, 4).map(r => `
+        <div class="h-scroll-card" onclick="switchTab('resources')">
+          <span style="font-size:28px">${r.icon}</span>
+          <span style="font-size:11px; font-weight:600; text-align:center; line-height:1.3">${r.title}</span>
+        </div>
+      `).join('');
+    }
+
+    // ===== PWA INSTALL =====
+    let deferredPrompt;
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      document.getElementById('installBanner').classList.add('show');
+    });
+
+    document.getElementById('installBtn').addEventListener('click', async () => {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') {
+          document.getElementById('installBanner').classList.remove('show');
+        }
+        deferredPrompt = null;
+      }
+    });
+
+    // ===== SERVICE WORKER =====
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').catch(() => {});
+    }
+
+    // ===== INIT =====
+    updateGreeting();
+    renderEventsList();
+    renderPosts('communityPosts');
+    renderPosts('homePosts', 2);
+    renderResources();
+
+    // Set initial nav colors
+    document.querySelectorAll('.nav-btn').forEach(b => {
+      const isActive = b.classList.contains('active');
+      b.querySelectorAll('svg').forEach(svg => {
+        svg.setAttribute('stroke', isActive ? '#C4704B' : '#8B7E74');
+      });
+    });
+  </script>
+</body>
+</html>

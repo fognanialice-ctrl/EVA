@@ -1,5 +1,5 @@
 {
-  "name": "dashboard",
+  "name": "eva-app",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -11,13 +11,9 @@
   "dependencies": {
     "@supabase/ssr": "^0.8.0",
     "@supabase/supabase-js": "^2.95.3",
-    "html2canvas": "^1.4.1",
-    "lucide-react": "^0.563.0",
     "next": "16.1.6",
     "react": "19.2.3",
-    "react-dom": "19.2.3",
-    "swr": "^2.4.0",
-    "zod": "^4.3.6"
+    "react-dom": "19.2.3"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

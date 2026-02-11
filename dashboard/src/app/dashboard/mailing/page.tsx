@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from 'react'
 import useSWR from 'swr'
+import Link from 'next/link'
 import { Mail, Download } from 'lucide-react'
 import { PageHeader } from '@/components/layout/page-header'
 import { Button } from '@/components/ui/button'
@@ -166,9 +167,12 @@ export default function MailingPage() {
               {subscribers.map((contact: MailingContact) => (
                 <TableRow key={contact.id}>
                   <TableCell>
-                    <span className="font-sans font-medium">
+                    <Link
+                      href={`/dashboard/contacts/${contact.id}`}
+                      className="font-sans font-medium text-warm-text hover:text-terracotta transition-colors"
+                    >
                       {contactDisplayName(contact)}
-                    </span>
+                    </Link>
                   </TableCell>
                   <TableCell>
                     {contact.email || (

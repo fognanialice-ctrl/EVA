@@ -47,6 +47,7 @@ export interface Contact {
   billing_province: string | null
   sdi_code: string | null
   pec: string | null
+  auth_user_id: string | null
   created_at: string
   updated_at: string
   tags?: Tag[]

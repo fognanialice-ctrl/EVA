@@ -31,6 +31,14 @@
   --input-border: var(--stone);
   --input-focus: var(--terracotta);
 
+  /* Cover system */
+  --cover-gold: #B59A5B;
+  --cover-gold-light: #C9A84C;
+  --cover-cream: #FAF7F2;
+  --cover-night: #0A0A0A;
+  --cover-burgundy: #1A0A10;
+  --cover-burgundy-mid: #6B2D3E;
+
   /* Badge colors */
   --badge-confirmed: var(--sage);
   --badge-pending: var(--ochre);
@@ -62,6 +70,12 @@
   --color-card-border: var(--card-border);
   --color-input-border: var(--input-border);
   --color-input-focus: var(--input-focus);
+  --color-cover-gold: var(--cover-gold);
+  --color-cover-gold-light: var(--cover-gold-light);
+  --color-cover-cream: var(--cover-cream);
+  --color-cover-night: var(--cover-night);
+  --color-cover-burgundy: var(--cover-burgundy);
+  --color-cover-burgundy-mid: var(--cover-burgundy-mid);
   --font-serif: 'Cormorant Garamond', serif;
   --font-sans: 'Outfit', sans-serif;
   --font-body: 'Inter', sans-serif;
@@ -93,4 +107,24 @@ body {
 *:focus-visible {
   outline: 2px solid var(--terracotta);
   outline-offset: 2px;
+}
+
+/* Cover image filters */
+.cover-img-noir {
+  filter: grayscale(100%) contrast(1.1) brightness(0.9);
+}
+
+.cover-img-editorial {
+  filter: contrast(1.05) saturate(0.85);
+}
+
+/* Cover text spacing */
+.cover-title-spaced {
+  letter-spacing: 0.15em;
+  line-height: 1.05;
+}
+
+.cover-subtitle-spaced {
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
 }

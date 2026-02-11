@@ -11,6 +11,7 @@ const pageTitles: Record<string, string> = {
   '/dashboard/events': 'Eventi',
   '/dashboard/payments': 'Pagamenti',
   '/dashboard/mailing': 'Mailing',
+  '/dashboard/instagram': 'Instagram',
   '/dashboard/settings': 'Impostazioni',
 }
 

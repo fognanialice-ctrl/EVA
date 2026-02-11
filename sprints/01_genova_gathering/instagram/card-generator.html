@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EVA · Card Generator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=DM+Sans:wght@300;400;500&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+  :root {
+    --cream: #FAF7F2;
+    --cream-alt: #F3EEE7;
+    --stone: #E8E2DA;
+    --warm-text: #1A1714;
+    --warm-muted: #5C544B;
+    --warm-light: #9A8E86;
+    --terracotta: #C67A5C;
+    --sage: #8A9A7B;
+    --dusty-rose: #C4A0A0;
+    --ochre: #C9A84C;
+    --burgundy: #6B2D3E;
+    --muted-gold: #B59A5B;
+    --soft-blue: #7A8FA6;
+    --night: #080C12;
+    --dark-burgundy: #1A0F14;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--warm-text);
+    min-height: 100vh;
+  }
+
+  .app-header {
+    padding: 2rem 2rem 1rem;
+    border-bottom: 1px solid var(--stone);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .app-header h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 400;
+    font-size: 1.8rem;
+    color: var(--warm-text);
+  }
+  .app-header span {
+    font-size: 0.85rem;
+    color: var(--warm-muted);
+    letter-spacing: 0.05em;
+  }
+
+  .app-layout {
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    min-height: calc(100vh - 80px);
+  }
+
+  /* Controls Panel */
+  .controls {
+    padding: 2rem;
+    border-right: 1px solid var(--stone);
+    overflow-y: auto;
+    max-height: calc(100vh - 80px);
+  }
+
+  .control-group {
+    margin-bottom: 1.5rem;
+  }
+  .control-group label {
+    display: block;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--warm-muted);
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+  }
+
+  .series-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .series-tab {
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--stone);
+    border-radius: 2rem;
+    background: white;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--warm-muted);
+  }
+  .series-tab:hover { border-color: var(--terracotta); color: var(--terracotta); }
+  .series-tab.active {
+    background: var(--warm-text);
+    color: white;
+    border-color: var(--warm-text);
+  }
+
+  .format-selector {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .format-btn {
+    flex: 1;
+    padding: 0.6rem;
+    border: 1px solid var(--stone);
+    border-radius: 0.5rem;
+    background: white;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.8rem;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s;
+    color: var(--warm-muted);
+  }
+  .format-btn:hover { border-color: var(--terracotta); }
+  .format-btn.active {
+    background: var(--terracotta);
+    color: white;
+    border-color: var(--terracotta);
+  }
+  .format-btn small { display: block; font-size: 0.7rem; opacity: 0.7; margin-top: 2px; }
+
+  textarea {
+    width: 100%;
+    padding: 1rem;
+    border: 1px solid var(--stone);
+    border-radius: 0.5rem;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    resize: vertical;
+    min-height: 140px;
+    color: var(--warm-text);
+    background: white;
+  }
+  textarea:focus { outline: none; border-color: var(--terracotta); }
+  textarea.caption-input {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    min-height: 80px;
+  }
+
+  .preset-list {
+    max-height: 240px;
+    overflow-y: auto;
+    border: 1px solid var(--stone);
+    border-radius: 0.5rem;
+    background: white;
+  }
+  .preset-item {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--cream-alt);
+    cursor: pointer;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.95rem;
+    line-height: 1.4;
+    color: var(--warm-muted);
+    transition: all 0.15s;
+  }
+  .preset-item:last-child { border-bottom: none; }
+  .preset-item:hover { background: var(--cream-alt); color: var(--warm-text); }
+  .preset-item.active { background: var(--cream-alt); color: var(--terracotta); }
+
+  .style-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+  }
+  .style-option {
+    padding: 0.75rem;
+    border: 1px solid var(--stone);
+    border-radius: 0.5rem;
+    cursor: pointer;
+    text-align: center;
+    font-size: 0.8rem;
+    transition: all 0.2s;
+    background: white;
+  }
+  .style-option:hover { border-color: var(--terracotta); }
+  .style-option.active { border-color: var(--warm-text); background: var(--cream-alt); }
+  .style-swatch {
+    width: 100%;
+    height: 30px;
+    border-radius: 0.25rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .download-btn {
+    width: 100%;
+    padding: 1rem;
+    background: var(--warm-text);
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 1rem;
+  }
+  .download-btn:hover { background: var(--terracotta); }
+  .download-btn:active { transform: scale(0.98); }
+
+  .copy-caption-btn {
+    width: 100%;
+    padding: 0.75rem;
+    background: white;
+    color: var(--warm-muted);
+    border: 1px solid var(--stone);
+    border-radius: 0.5rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 0.5rem;
+  }
+  .copy-caption-btn:hover { border-color: var(--terracotta); color: var(--terracotta); }
+
+  /* Preview Panel */
+  .preview-area {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    background: #E8E2DA;
+    overflow: auto;
+  }
+
+  .card-wrapper {
+    box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  /* === CARD STYLES === */
+  .card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+  }
+  .card.feed { width: 540px; height: 540px; }
+  .card.story { width: 405px; height: 720px; }
+
+  /* Style: Cream */
+  .card.style-cream {
+    background: var(--cream);
+  }
+  .card.style-cream .card-accent-line { background: var(--terracotta); }
+  .card.style-cream .card-text { color: var(--warm-text); }
+  .card.style-cream .card-series-label { color: var(--terracotta); }
+  .card.style-cream .card-watermark { color: var(--warm-light); }
+
+  /* Style: Terracotta */
+  .card.style-terracotta {
+    background: var(--terracotta);
+  }
+  .card.style-terracotta .card-accent-line { background: var(--cream); }
+  .card.style-terracotta .card-text { color: var(--cream); }
+  .card.style-terracotta .card-series-label { color: rgba(250,247,242,0.7); }
+  .card.style-terracotta .card-watermark { color: rgba(250,247,242,0.3); }
+
+  /* Style: Night */
+  .card.style-night {
+    background: var(--night);
+  }
+  .card.style-night .card-accent-line { background: var(--muted-gold); }
+  .card.style-night .card-text { color: var(--cream); }
+  .card.style-night .card-series-label { color: var(--muted-gold); }
+  .card.style-night .card-watermark { color: rgba(250,247,242,0.15); }
+
+  /* Style: Burgundy */
+  .card.style-burgundy {
+    background: var(--burgundy);
+  }
+  .card.style-burgundy .card-accent-line { background: var(--muted-gold); }
+  .card.style-burgundy .card-text { color: var(--cream); }
+  .card.style-burgundy .card-series-label { color: var(--muted-gold); }
+  .card.style-burgundy .card-watermark { color: rgba(250,247,242,0.2); }
+
+  /* Card inner layout */
+  .card-inner {
+    padding: 12%;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+  }
+
+  .card-series-label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    font-weight: 500;
+  }
+
+  .card-accent-line {
+    width: 40px;
+    height: 2px;
+    margin-bottom: 2rem;
+  }
+
+  .card-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 400;
+    line-height: 1.45;
+    white-space: pre-line;
+  }
+  .card.feed .card-text { font-size: 26px; }
+  .card.story .card-text { font-size: 28px; }
+  .card.feed .card-text.long { font-size: 22px; }
+  .card.story .card-text.long { font-size: 24px; }
+
+  .card-text.italic { font-style: italic; }
+
+  .card-watermark {
+    position: absolute;
+    bottom: 8%;
+    right: 10%;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 13px;
+    font-weight: 400;
+    letter-spacing: 0.15em;
+  }
+
+  /* Story-specific: poll, slider, this-or-that */
+  .card .story-poll {
+    margin-top: 2rem;
+    display: flex;
+    gap: 0.75rem;
+  }
+  .story-poll-option {
+    flex: 1;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    text-align: center;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  .card.style-cream .story-poll-option { background: var(--stone); color: var(--warm-text); }
+  .card.style-terracotta .story-poll-option { background: rgba(250,247,242,0.2); color: var(--cream); }
+  .card.style-night .story-poll-option { background: rgba(250,247,242,0.1); color: var(--cream); }
+  .card.style-burgundy .story-poll-option { background: rgba(250,247,242,0.15); color: var(--cream); }
+
+  .card .story-slider {
+    margin-top: 2rem;
+    width: 100%;
+  }
+  .story-slider-track {
+    width: 100%;
+    height: 4px;
+    border-radius: 2px;
+    position: relative;
+  }
+  .card.style-cream .story-slider-track { background: var(--stone); }
+  .card.style-terracotta .story-slider-track { background: rgba(250,247,242,0.2); }
+  .card.style-night .story-slider-track { background: rgba(250,247,242,0.1); }
+  .card.style-burgundy .story-slider-track { background: rgba(250,247,242,0.15); }
+  .story-slider-emoji {
+    position: absolute;
+    right: 30%;
+    top: 50%;
+    transform: translate(50%, -50%);
+    font-size: 24px;
+  }
+
+  .card .story-tot {
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .story-tot-option {
+    padding: 1rem;
+    border-radius: 0.75rem;
+    text-align: center;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    font-weight: 400;
+  }
+  .card.style-cream .story-tot-option { background: var(--stone); color: var(--warm-text); }
+  .card.style-terracotta .story-tot-option { background: rgba(250,247,242,0.2); color: var(--cream); }
+  .card.style-night .story-tot-option { background: rgba(250,247,242,0.1); color: var(--cream); }
+  .card.style-burgundy .story-tot-option { background: rgba(250,247,242,0.15); color: var(--cream); }
+
+  .card .question-box {
+    margin-top: 2rem;
+    padding: 1.25rem;
+    border-radius: 0.75rem;
+    text-align: center;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.05em;
+  }
+  .card.style-cream .question-box { background: var(--stone); color: var(--warm-muted); }
+  .card.style-terracotta .question-box { background: rgba(250,247,242,0.15); color: rgba(250,247,242,0.6); }
+  .card.style-night .question-box { background: rgba(250,247,242,0.08); color: rgba(250,247,242,0.4); }
+  .card.style-burgundy .question-box { background: rgba(250,247,242,0.1); color: rgba(250,247,242,0.5); }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    .app-layout { grid-template-columns: 1fr; }
+    .controls { max-height: none; border-right: none; border-bottom: 1px solid var(--stone); }
+    .card.feed { width: 360px; height: 360px; }
+    .card.story { width: 270px; height: 480px; }
+    .card.feed .card-text { font-size: 20px; }
+    .card.story .card-text { font-size: 21px; }
+    .card.feed .card-text.long { font-size: 17px; }
+    .card.story .card-text.long { font-size: 18px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app-header">
+  <h1>EVA</h1>
+  <span>Card Generator &middot; Instagram Campaign</span>
+</div>
+
+<div class="app-layout">
+  <!-- Controls -->
+  <div class="controls">
+    <div class="control-group">
+      <label>Serie</label>
+      <div class="series-tabs">
+        <button class="series-tab active" data-series="domanda">La Domanda</button>
+        <button class="series-tab" data-series="lettera">Lettere</button>
+        <button class="series-tab" data-series="genova">Genova</button>
+        <button class="series-tab" data-series="poll">Poll</button>
+        <button class="series-tab" data-series="slider">Slider</button>
+        <button class="series-tab" data-series="tot">This or That</button>
+        <button class="series-tab" data-series="qbox">Question Box</button>
+      </div>
+    </div>
+
+    <div class="control-group">
+      <label>Formato</label>
+      <div class="format-selector">
+        <button class="format-btn active" data-format="feed">Feed<small>1080 &times; 1080</small></button>
+        <button class="format-btn" data-format="story">Story<small>1080 &times; 1920</small></button>
+      </div>
+    </div>
+
+    <div class="control-group">
+      <label>Stile</label>
+      <div class="style-options">
+        <div class="style-option active" data-style="cream">
+          <div class="style-swatch" style="background: linear-gradient(135deg, #FAF7F2, #F3EEE7);"></div>
+          Crema
+        </div>
+        <div class="style-option" data-style="terracotta">
+          <div class="style-swatch" style="background: linear-gradient(135deg, #C67A5C, #b06a4e);"></div>
+          Terracotta
+        </div>
+        <div class="style-option" data-style="night">
+          <div class="style-swatch" style="background: linear-gradient(135deg, #080C12, #141a24);"></div>
+          Notte
+        </div>
+        <div class="style-option" data-style="burgundy">
+          <div class="style-swatch" style="background: linear-gradient(135deg, #6B2D3E, #4a1f2b);"></div>
+          Borgogna
+        </div>
+      </div>
+    </div>
+
+    <div class="control-group" id="preset-group">
+      <label>Contenuti Pronti</label>
+      <div class="preset-list" id="preset-list"></div>
+    </div>
+
+    <div class="control-group" id="text-group">
+      <label>Testo della Card</label>
+      <textarea id="card-text" placeholder="Scrivi il testo della card..."></textarea>
+    </div>
+
+    <div class="control-group" id="interactive-group" style="display:none;">
+      <label>Opzione A</label>
+      <input type="text" id="option-a" placeholder="Prima opzione..." style="width:100%;padding:0.6rem;border:1px solid var(--stone);border-radius:0.5rem;font-family:'DM Sans';margin-bottom:0.5rem;">
+      <label>Opzione B</label>
+      <input type="text" id="option-b" placeholder="Seconda opzione..." style="width:100%;padding:0.6rem;border:1px solid var(--stone);border-radius:0.5rem;font-family:'DM Sans';">
+    </div>
+
+    <div class="control-group" id="emoji-group" style="display:none;">
+      <label>Emoji Slider</label>
+      <input type="text" id="slider-emoji" value="❤️" style="width:100%;padding:0.6rem;border:1px solid var(--stone);border-radius:0.5rem;font-family:'DM Sans';font-size:1.2rem;text-align:center;">
+    </div>
+
+    <div class="control-group">
+      <label>Caption (per copiare)</label>
+      <textarea id="caption-text" class="caption-input" placeholder="Scrivi la caption..."></textarea>
+      <button class="copy-caption-btn" onclick="copyCaption()">Copia Caption + Hashtag</button>
+    </div>
+
+    <button class="download-btn" onclick="downloadCard()">Scarica Card (PNG)</button>
+    <button class="download-btn" style="background:var(--terracotta);margin-top:0.5rem;" onclick="downloadCard(2)">Scarica @2x (Alta Qualità)</button>
+  </div>
+
+  <!-- Preview -->
+  <div class="preview-area">
+    <div class="card-wrapper">
+      <div class="card feed style-cream" id="card">
+        <div class="card-inner">
+          <div class="card-series-label" id="card-label">LA DOMANDA</div>
+          <div class="card-accent-line"></div>
+          <div class="card-text italic" id="card-text-display">Qual è l'ultima cosa che hai fatto solo perché ti andava — senza spiegarlo a nessuno?</div>
+          <div id="card-interactive"></div>
+          <div class="card-watermark">EVA</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const contentBank = {
+  domanda: {
+    label: "LA DOMANDA",
+    italic: true,
+    presets: [
+      { text: "Qual è l'ultima cosa che hai fatto solo perché ti andava — senza spiegarlo a nessuno?", caption: "A volte le cose più belle sono quelle che facciamo senza un motivo.\n\nTi va di dirmelo? Anche solo a te stessa.\n\n#evathesanctuary #genova #donnechescelgono #bellezzachenutre #donneitaliane" },
+      { text: "Se dovessi descrivere come ti senti adesso con un profumo, quale sarebbe?", caption: "Non cercare la risposta giusta. Cerca quella vera.\n\nSe ti va, scrivimelo nei commenti. O in un messaggio. O sussurralo al vento.\n\n#evathesanctuary #genovacity #bellezzaautentica #comunitàfemminile #evagenova" },
+      { text: "Quando è stata l'ultima volta che ti sei guardata allo specchio e ti sei piaciuta?", caption: "Non per come apparivi. Per come eri.\n\nRaccontamelo, se ti va.\n\n#evathesanctuary #genova #donnechescelgono #bellezzachenutre #donnegenovesi" },
+      { text: "C'è una donna nella tua vita che ti ha insegnato cos'è la bellezza senza mai parlarne?", caption: "Dedicale un pensiero. Anche adesso.\n\nSe vuoi, taggala qui sotto. O scrivile.\n\n#evathesanctuary #genova #donneitaliane #bellezzachenutre #comunitàfemminile" },
+      { text: "Cosa faresti questo sabato se non dovessi rendere conto a nessuno?", caption: "Non quello che dovresti fare. Quello che vuoi.\n\nScrivimelo. Lo custodisco.\n\n#evathesanctuary #genovacity #donnechescelgono #bellezzaautentica #evagenova" },
+      { text: "Quale parte di te hai smesso di ascoltare?", caption: "Forse è ora di riaccendere quel volume.\n\nTi aspetto nei messaggi. O qui sotto. Come preferisci.\n\n#evathesanctuary #genova #donneitaliane #bellezzachenutre #donnechescelgono" },
+      { text: "Qual è il gesto più bello che qualcuno ha fatto per te e che non hai mai raccontato?", caption: "Certe cose si tengono strette. Ma a volte fa bene dirle.\n\nTi ascolto.\n\n#evathesanctuary #genova #bellezzachenutre #comunitàfemminile #donnegenovesi" },
+      { text: "Se potessi regalare un'ora a te stessa — un'ora perfetta — come sarebbe?", caption: "Un'ora. Solo tua. Nessun dovere.\n\nDescrivimela.\n\n#evathesanctuary #genovacity #bellezzaautentica #donnechescelgono #evagenova" },
+      { text: "Cosa ti fa sentire bella? E non intendo esteticamente.", caption: "La domanda che conta.\n\nRispondimi. Anche in un messaggio privato.\n\n#evathesanctuary #genova #bellezzachenutre #donneitaliane #donnechescelgono" }
+    ]
+  },
+  lettera: {
+    label: "LETTERE A UNA DONNA CHE NON CONOSCO",
+    italic: false,
+    presets: [
+      { text: "Alla donna che stasera sta scrollando il telefono\nperché non ha più energia per nient'altro:\n\nsei stanca perché dai tanto.\nNon perché sei rotta.\n\nC'è differenza.", caption: "Se la conosci, mandagliela.\nSe sei tu, tienila.\n\n#evathesanctuary #genova #donneitaliane #bellezzachenutre #comunitàfemminile" },
+      { text: "Alla donna che ha smesso di dedicarsi cose belle\nperché c'era sempre qualcosa di più urgente:\n\nNiente è più urgente di te.\nNiente.", caption: "Salvala per quando ne hai bisogno.\nO mandala a chi ne ha bisogno adesso.\n\n#evathesanctuary #genovacity #donnechescelgono #bellezzaautentica #evagenova" },
+      { text: "Alla donna che non sa se è abbastanza:\n\nSei così abbastanza\nche la stanza cambia quando entri.\nE forse non te ne accorgi.\nMa le altre donne sì.", caption: "Lo pensavo e l'ho scritto.\nForse qualcuna ha bisogno di leggerlo stasera.\n\n#evathesanctuary #genova #donneitaliane #bellezzachenutre #donnechescelgono" },
+      { text: "Alla donna che verrà sabato:\n\nnon devi essere pronta.\nNon devi sapere cosa aspettarti.\nDevi solo venire come sei.\n\nNoi ti aspettiamo.\nCon tè caldo e domande belle.\nE la luce giusta.", caption: "Sabato 14 marzo. Genova.\nL'incontro più bello dell'anno.\n\nScrivimi se vuoi esserci.\n\n#evathesanctuary #evagenova #genova #bellezzachenutre #14marzo" }
+    ]
+  },
+  genova: {
+    label: "GENOVA CHE NUTRE",
+    italic: false,
+    presets: [
+      { text: "Luce di febbraio sui tetti.", caption: "Genova.\n\n#genova #genovacity #evathesanctuary" },
+      { text: "Via Garibaldi, le cinque del pomeriggio.", caption: "#genova #genovacentrostorico #evathesanctuary" },
+      { text: "Il mare di Genova quando non lo guarda nessuno.", caption: "#genova #genovacity #evathesanctuary #bellezzaautentica" },
+      { text: "Caffè. Silenzio. Centro storico.", caption: "#genova #genovacentrostorico #evathesanctuary" },
+      { text: "I colori di Genova, tra la pietra.", caption: "#genova #genovacity #evathesanctuary #bellezzachenutre" },
+      { text: "Mercato Orientale, mattina presto.", caption: "#genova #genovacity #evathesanctuary" }
+    ]
+  },
+  poll: {
+    label: "LO SPECCHIO",
+    italic: false,
+    interactive: "poll",
+    presets: [
+      { text: "Oggi ti sei dedicata qualcosa di bello?", optionA: "Sì", optionB: "Non ancora" },
+      { text: "Stasera esci o resti con te stessa?", optionA: "Esco", optionB: "Resto" },
+      { text: "L'ultima volta che hai detto 'no' a qualcosa che non sentivi?", optionA: "Ieri", optionB: "Non me lo ricordo" }
+    ]
+  },
+  slider: {
+    label: "LO SPECCHIO",
+    italic: false,
+    interactive: "slider",
+    presets: [
+      { text: "Quanto ti sei ascoltata oggi?", emoji: "❤️" },
+      { text: "Quanto ti senti viva in questo momento?", emoji: "🔥" },
+      { text: "Quanto sei stata gentile con te stessa oggi?", emoji: "🌸" }
+    ]
+  },
+  tot: {
+    label: "LO SPECCHIO",
+    italic: false,
+    interactive: "tot",
+    presets: [
+      { text: "Cosa scegli?", optionA: "Caffè in silenzio", optionB: "Caffè con un'amica" },
+      { text: "Cosa scegli?", optionA: "Mare d'inverno", optionB: "Caruggi al tramonto" },
+      { text: "Cosa scegli?", optionA: "Un libro e il divano", optionB: "Una passeggiata senza meta" },
+      { text: "Cosa scegli?", optionA: "Dire tutto", optionB: "Tenere qualcosa per sé" }
+    ]
+  },
+  qbox: {
+    label: "LO SPECCHIO",
+    italic: false,
+    interactive: "qbox",
+    presets: [
+      { text: "Dimmi una cosa bella che è successa oggi. Anche piccola." },
+      { text: "Cosa ti ha nutrito questa settimana?" },
+      { text: "Cosa diresti alla te di stamattina?" },
+      { text: "Se potessi passare un pomeriggio con 25 donne in un palazzo storico di Genova..." }
+    ]
+  }
+};
+
+let currentSeries = 'domanda';
+let currentFormat = 'feed';
+let currentStyle = 'cream';
+
+// Init
+document.addEventListener('DOMContentLoaded', () => {
+  loadPresets();
+  bindEvents();
+  if (contentBank[currentSeries].presets[0]) {
+    selectPreset(0);
+  }
+});
+
+function bindEvents() {
+  document.querySelectorAll('.series-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.series-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      currentSeries = tab.dataset.series;
+      loadPresets();
+      updateInteractiveControls();
+      if (contentBank[currentSeries].presets[0]) selectPreset(0);
+    });
+  });
+
+  document.querySelectorAll('.format-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.format-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentFormat = btn.dataset.format;
+      updateCard();
+    });
+  });
+
+  document.querySelectorAll('.style-option').forEach(opt => {
+    opt.addEventListener('click', () => {
+      document.querySelectorAll('.style-option').forEach(o => o.classList.remove('active'));
+      opt.classList.add('active');
+      currentStyle = opt.dataset.style;
+      updateCard();
+    });
+  });
+
+  document.getElementById('card-text').addEventListener('input', updateCard);
+  document.getElementById('option-a').addEventListener('input', updateCard);
+  document.getElementById('option-b').addEventListener('input', updateCard);
+  document.getElementById('slider-emoji').addEventListener('input', updateCard);
+}
+
+function loadPresets() {
+  const list = document.getElementById('preset-list');
+  const presets = contentBank[currentSeries].presets;
+  list.innerHTML = presets.map((p, i) =>
+    `<div class="preset-item" data-index="${i}">${truncate(p.text, 80)}</div>`
+  ).join('');
+  list.querySelectorAll('.preset-item').forEach(item => {
+    item.addEventListener('click', () => selectPreset(parseInt(item.dataset.index)));
+  });
+}
+
+function selectPreset(index) {
+  const preset = contentBank[currentSeries].presets[index];
+  document.getElementById('card-text').value = preset.text;
+  if (preset.caption) document.getElementById('caption-text').value = preset.caption;
+  if (preset.optionA) document.getElementById('option-a').value = preset.optionA;
+  if (preset.optionB) document.getElementById('option-b').value = preset.optionB;
+  if (preset.emoji) document.getElementById('slider-emoji').value = preset.emoji;
+
+  document.querySelectorAll('.preset-item').forEach((item, i) => {
+    item.classList.toggle('active', i === index);
+  });
+  updateCard();
+}
+
+function updateInteractiveControls() {
+  const series = contentBank[currentSeries];
+  const interGroup = document.getElementById('interactive-group');
+  const emojiGroup = document.getElementById('emoji-group');
+
+  if (series.interactive === 'poll' || series.interactive === 'tot') {
+    interGroup.style.display = 'block';
+    emojiGroup.style.display = 'none';
+    // Auto-switch to story format for interactive
+    document.querySelectorAll('.format-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector('[data-format="story"]').classList.add('active');
+    currentFormat = 'story';
+  } else if (series.interactive === 'slider') {
+    interGroup.style.display = 'none';
+    emojiGroup.style.display = 'block';
+    document.querySelectorAll('.format-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector('[data-format="story"]').classList.add('active');
+    currentFormat = 'story';
+  } else if (series.interactive === 'qbox') {
+    interGroup.style.display = 'none';
+    emojiGroup.style.display = 'none';
+    document.querySelectorAll('.format-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector('[data-format="story"]').classList.add('active');
+    currentFormat = 'story';
+  } else {
+    interGroup.style.display = 'none';
+    emojiGroup.style.display = 'none';
+  }
+}
+
+function updateCard() {
+  const card = document.getElementById('card');
+  const series = contentBank[currentSeries];
+  const text = document.getElementById('card-text').value;
+
+  // Format
+  card.classList.remove('feed', 'story');
+  card.classList.add(currentFormat);
+
+  // Style
+  card.className = card.className.replace(/style-\w+/g, '');
+  card.classList.add(`style-${currentStyle}`);
+
+  // Label
+  document.getElementById('card-label').textContent = series.label;
+
+  // Text
+  const textDisplay = document.getElementById('card-text-display');
+  textDisplay.textContent = text;
+  textDisplay.classList.toggle('italic', !!series.italic);
+  textDisplay.classList.toggle('long', text.length > 120);
+
+  // Interactive elements
+  const interEl = document.getElementById('card-interactive');
+  interEl.innerHTML = '';
+
+  if (series.interactive === 'poll') {
+    const a = document.getElementById('option-a').value || 'Sì';
+    const b = document.getElementById('option-b').value || 'No';
+    interEl.innerHTML = `<div class="story-poll"><div class="story-poll-option">${a}</div><div class="story-poll-option">${b}</div></div>`;
+  } else if (series.interactive === 'slider') {
+    const emoji = document.getElementById('slider-emoji').value || '❤️';
+    interEl.innerHTML = `<div class="story-slider"><div class="story-slider-track"><span class="story-slider-emoji">${emoji}</span></div></div>`;
+  } else if (series.interactive === 'tot') {
+    const a = document.getElementById('option-a').value || 'A';
+    const b = document.getElementById('option-b').value || 'B';
+    interEl.innerHTML = `<div class="story-tot"><div class="story-tot-option">${a}</div><div class="story-tot-option">${b}</div></div>`;
+  } else if (series.interactive === 'qbox') {
+    interEl.innerHTML = `<div class="question-box">Tocca per rispondere...</div>`;
+  }
+}
+
+function truncate(str, len) {
+  return str.length > len ? str.substring(0, len) + '...' : str;
+}
+
+function copyCaption() {
+  const caption = document.getElementById('caption-text').value;
+  navigator.clipboard.writeText(caption).then(() => {
+    const btn = document.querySelector('.copy-caption-btn');
+    btn.textContent = 'Copiato!';
+    setTimeout(() => btn.textContent = 'Copia Caption + Hashtag', 1500);
+  });
+}
+
+function downloadCard(scale = 1) {
+  const card = document.getElementById('card');
+  const seriesName = currentSeries;
+  const formatName = currentFormat;
+
+  // For proper resolution, we render at 2x the display size
+  const actualScale = scale * (currentFormat === 'feed' ? 2 : 2.667);
+
+  html2canvas(card, {
+    scale: actualScale,
+    useCORS: true,
+    backgroundColor: null,
+    logging: false
+  }).then(canvas => {
+    const link = document.createElement('a');
+    const timestamp = new Date().toISOString().slice(0,10);
+    link.download = `EVA_${seriesName}_${formatName}_${timestamp}.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  });
+}
+</script>
+</body>
+</html>

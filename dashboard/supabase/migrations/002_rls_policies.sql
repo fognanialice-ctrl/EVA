@@ -23,23 +23,23 @@ ALTER TABLE activity_log ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Authenticated users can view all contacts"
   ON contacts FOR SELECT
   TO authenticated
-  USING (true);
+  USING ((SELECT auth.uid()) IS NOT NULL);
 
 CREATE POLICY "Authenticated users can insert contacts"
   ON contacts FOR INSERT
   TO authenticated
-  WITH CHECK (true);
+  WITH CHECK ((SELECT auth.uid()) IS NOT NULL);
 
 CREATE POLICY "Authenticated users can update contacts"
   ON contacts FOR UPDATE
   TO authenticated
-  USING (true)
-  WITH CHECK (true);
+  USING ((SELECT auth.uid()) IS NOT NULL)
+  WITH CHECK ((SELECT auth.uid()) IS NOT NULL);
 
 CREATE POLICY "Authenticated users can delete contacts"
   ON contacts FOR DELETE
   TO authenticated
-  USING (true);
+  USING ((SELECT auth.uid()) IS NOT NULL);
 
 -- ============================================================================
 -- TAGS
@@ -48,23 +48,23 @@ CREATE POLICY "Authenticated users can delete contacts"
 CREATE POLICY "Authenticated users can view all tags"
   ON tags FOR SELECT
   TO authenticated
-  USING (true);
+  USING ((SELECT auth.uid()) IS NOT NULL);
 
 CREATE POLICY "Authenticated users can insert tags"
   ON tags FOR INSERT
   TO authenticated
-  WITH CHECK (true);
+  WITH CHECK ((SELECT auth.uid()) IS NOT NULL);
 
 CREATE POLICY "Authenticated users can update tags"
   ON tags FOR UPDATE
   TO authenticated
-  USING (true)
-  WITH CHECK (true);
+  USING ((SELECT auth.uid()) IS NOT NULL)
+  WITH CHECK ((SELECT auth.uid()) IS NOT NULL);
 
 CREATE POLICY "Authenticated users can delete tags"
   ON tags FOR DELETE
   TO authenticated
-  USING (true);
+  USING ((SELECT auth.uid()) IS NOT NULL);
 
 -- ============================================================================
 -- CONTACT_TAGS
@@ -73,17 +73,17 @@ CREATE POLICY "Authenticated users can delete tags"
 CREATE POLICY "Authenticated users can view all contact tags"
   ON contact_tags FOR SELECT
   TO authenticated
-  USING (true);
+  USING ((SELECT auth.uid()) IS NOT NULL);
 
 CREATE POLICY "Authenticated users can insert contact tags"
   ON contact_tags FOR INSERT
   TO authenticated
-  WITH CHECK (true);
+  WITH CHECK ((SELECT auth.uid()) IS NOT NULL);
 
 CREATE POLICY "Authenticated users can delete contact tags"
   ON contact_tags FOR DELETE
   TO authenticated
-  USING (true);
+  USING ((SELECT auth.uid()) IS NOT NULL);
 
 -- ============================================================================
 -- EVENTS
@@ -92,23 +92,23 @@ CREATE POLICY "Authenticated users can delete contact tags"
 CREATE POLICY "Authenticated users can view all events"
   ON events FOR SELECT
   TO authenticated
-  USING (true);
+  USING ((SELECT auth.uid()) IS NOT NULL);
 
 CREATE POLICY "Authenticated users can insert events"
   ON events FOR INSERT
   TO authenticated
-  WITH CHECK (true);
+  WITH CHECK ((SELECT auth.uid()) IS NOT NULL);
 
 CREATE POLICY "Authenticated users can update events"
   ON events FOR UPDATE
   TO authenticated
-  USING (true)
-  WITH CHECK (true);
+  USING ((SELECT auth.uid()) IS NOT NULL)
+  WITH CHECK ((SELECT auth.uid()) IS NOT NULL);
 
 CREATE POLICY "Authenticated users can delete events"
   ON events FOR DELETE
   TO authenticated
-  USING (true);
+  USING ((SELECT auth.uid()) IS NOT NULL);
 
 -- ============================================================================
 -- EVENT_REGISTRATIONS
@@ -117,23 +117,23 @@ CREATE POLICY "Authenticated users can delete events"
 CREATE POLICY "Authenticated users can view all registrations"
   ON event_registrations FOR SELECT
   TO authenticated
-  USING (true);
+  USING ((SELECT auth.uid()) IS NOT NULL);
 
 CREATE POLICY "Authenticated users can insert registrations"
   ON event_registrations FOR INSERT
   TO authenticated
-  WITH CHECK (true);
+  WITH CHECK ((SELECT auth.uid()) IS NOT NULL);
 
 CREATE POLICY "Authenticated users can update registrations"
   ON event_registrations FOR UPDATE
   TO authenticated
-  USING (true)
-  WITH CHECK (true);
+  USING ((SELECT auth.uid()) IS NOT NULL)
+  WITH CHECK ((SELECT auth.uid()) IS NOT NULL);
 
 CREATE POLICY "Authenticated users can delete registrations"
   ON event_registrations FOR DELETE
   TO authenticated
-  USING (true);
+  USING ((SELECT auth.uid()) IS NOT NULL);
 
 -- ============================================================================
 -- PAYMENTS
@@ -142,23 +142,23 @@ CREATE POLICY "Authenticated users can delete registrations"
 CREATE POLICY "Authenticated users can view all payments"
   ON payments FOR SELECT
   TO authenticated
-  USING (true);
+  USING ((SELECT auth.uid()) IS NOT NULL);
 
 CREATE POLICY "Authenticated users can insert payments"
   ON payments FOR INSERT
   TO authenticated
-  WITH CHECK (true);
+  WITH CHECK ((SELECT auth.uid()) IS NOT NULL);
 
 CREATE POLICY "Authenticated users can update payments"
   ON payments FOR UPDATE
   TO authenticated
-  USING (true)
-  WITH CHECK (true);
+  USING ((SELECT auth.uid()) IS NOT NULL)
+  WITH CHECK ((SELECT auth.uid()) IS NOT NULL);
 
 CREATE POLICY "Authenticated users can delete payments"
   ON payments FOR DELETE
   TO authenticated
-  USING (true);
+  USING ((SELECT auth.uid()) IS NOT NULL);
 
 -- ============================================================================
 -- ACTIVITY_LOG
@@ -169,27 +169,27 @@ CREATE POLICY "Authenticated users can delete payments"
 CREATE POLICY "Authenticated users can view all activity logs"
   ON activity_log FOR SELECT
   TO authenticated
-  USING (true);
+  USING ((SELECT auth.uid()) IS NOT NULL);
 
 CREATE POLICY "Authenticated users can insert activity logs"
   ON activity_log FOR INSERT
   TO authenticated
-  WITH CHECK (true);
+  WITH CHECK ((SELECT auth.uid()) IS NOT NULL);
 
 CREATE POLICY "Authenticated users can update activity logs"
   ON activity_log FOR UPDATE
   TO authenticated
-  USING (true)
-  WITH CHECK (true);
+  USING ((SELECT auth.uid()) IS NOT NULL)
+  WITH CHECK ((SELECT auth.uid()) IS NOT NULL);
 
 CREATE POLICY "Authenticated users can delete activity logs"
   ON activity_log FOR DELETE
   TO authenticated
-  USING (true);
+  USING ((SELECT auth.uid()) IS NOT NULL);
 
 -- Allow the service_role (used by server-side functions / triggers) to insert
 -- activity log entries for system-level actions.
 CREATE POLICY "Service role can insert activity logs"
   ON activity_log FOR INSERT
   TO service_role
-  WITH CHECK (true);
+  WITH CHECK ((SELECT auth.uid()) IS NOT NULL);

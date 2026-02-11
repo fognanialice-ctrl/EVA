@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EVA · Campaign Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #FAF7F2;
+    --cream-alt: #F3EEE7;
+    --stone: #E8E2DA;
+    --warm-text: #1A1714;
+    --warm-muted: #5C544B;
+    --warm-light: #9A8E86;
+    --terracotta: #C67A5C;
+    --sage: #8A9A7B;
+    --dusty-rose: #C4A0A0;
+    --ochre: #C9A84C;
+    --burgundy: #6B2D3E;
+    --muted-gold: #B59A5B;
+    --night: #080C12;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--warm-text);
+    line-height: 1.6;
+  }
+
+  /* Header */
+  header {
+    padding: 2rem 3rem;
+    border-bottom: 1px solid var(--stone);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  header h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 400;
+    font-size: 2rem;
+  }
+  header h1 span { color: var(--terracotta); }
+  .header-meta {
+    text-align: right;
+    font-size: 0.85rem;
+    color: var(--warm-muted);
+  }
+  .header-meta strong { color: var(--terracotta); }
+
+  /* Nav */
+  nav {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid var(--stone);
+    padding: 0 3rem;
+    overflow-x: auto;
+  }
+  nav button {
+    padding: 1rem 1.5rem;
+    border: none;
+    background: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    color: var(--warm-muted);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    transition: all 0.2s;
+  }
+  nav button:hover { color: var(--warm-text); }
+  nav button.active {
+    color: var(--terracotta);
+    border-bottom-color: var(--terracotta);
+    font-weight: 500;
+  }
+
+  /* Main */
+  main { padding: 2rem 3rem; max-width: 1400px; }
+
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* Overview cards */
+  .overview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  .stat-card {
+    background: white;
+    border: 1px solid var(--stone);
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+  }
+  .stat-card .label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--warm-muted);
+    margin-bottom: 0.5rem;
+  }
+  .stat-card .value {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem;
+    font-weight: 500;
+    color: var(--terracotta);
+  }
+  .stat-card .detail {
+    font-size: 0.8rem;
+    color: var(--warm-light);
+    margin-top: 0.25rem;
+  }
+
+  /* Progress bar */
+  .progress-section { margin-bottom: 2rem; }
+  .progress-bar-container {
+    background: var(--stone);
+    border-radius: 1rem;
+    height: 8px;
+    overflow: hidden;
+    margin-top: 0.5rem;
+  }
+  .progress-bar {
+    height: 100%;
+    border-radius: 1rem;
+    background: linear-gradient(90deg, var(--terracotta), var(--muted-gold));
+    transition: width 0.5s;
+  }
+  .progress-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.5rem;
+    font-size: 0.75rem;
+    color: var(--warm-muted);
+  }
+
+  /* Calendar */
+  .week-section {
+    margin-bottom: 2.5rem;
+  }
+  .week-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  .week-header h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 400;
+    font-size: 1.5rem;
+  }
+  .week-header .week-subtitle {
+    font-size: 0.85rem;
+    color: var(--warm-muted);
+    font-style: italic;
+  }
+  .week-header .week-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+  }
+  .week-badge.current { background: var(--terracotta); color: white; }
+  .week-badge.upcoming { background: var(--stone); color: var(--warm-muted); }
+  .week-badge.past { background: var(--cream-alt); color: var(--warm-light); }
+
+  .calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.5rem;
+  }
+  .day-card {
+    background: white;
+    border: 1px solid var(--stone);
+    border-radius: 0.5rem;
+    padding: 0.75rem;
+    min-height: 140px;
+    transition: all 0.2s;
+    cursor: default;
+  }
+  .day-card:hover { border-color: var(--terracotta); }
+  .day-card.today { border-color: var(--terracotta); border-width: 2px; }
+  .day-card .day-date {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--warm-light);
+    margin-bottom: 0.5rem;
+  }
+  .day-card .day-date strong { color: var(--warm-text); }
+  .day-item {
+    font-size: 0.78rem;
+    padding: 0.3rem 0.5rem;
+    border-radius: 0.25rem;
+    margin-bottom: 0.25rem;
+    line-height: 1.3;
+  }
+  .day-item.feed { background: #fef2ee; color: var(--terracotta); border-left: 2px solid var(--terracotta); }
+  .day-item.stories { background: #f0f3ee; color: var(--sage); border-left: 2px solid var(--sage); }
+  .day-item.action { background: #f5f0ea; color: var(--muted-gold); border-left: 2px solid var(--muted-gold); }
+  .day-item.reel { background: #f3eef5; color: var(--burgundy); border-left: 2px solid var(--burgundy); }
+
+  .day-item .series-tag {
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    opacity: 0.7;
+  }
+
+  /* Content Bank */
+  .series-section {
+    margin-bottom: 2rem;
+  }
+  .series-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--stone);
+  }
+  .series-header h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 400;
+    font-size: 1.3rem;
+  }
+  .series-header .freq {
+    font-size: 0.8rem;
+    color: var(--warm-muted);
+    padding: 0.2rem 0.6rem;
+    background: var(--cream-alt);
+    border-radius: 1rem;
+  }
+  .content-card {
+    background: white;
+    border: 1px solid var(--stone);
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+    margin-bottom: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .content-card:hover { border-color: var(--terracotta); transform: translateY(-1px); }
+  .content-card .content-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    line-height: 1.5;
+    margin-bottom: 0.75rem;
+    white-space: pre-line;
+  }
+  .content-card .content-meta {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.75rem;
+    color: var(--warm-light);
+  }
+  .content-card .content-meta span {
+    padding: 0.15rem 0.5rem;
+    background: var(--cream-alt);
+    border-radius: 0.25rem;
+  }
+
+  /* Hashtags */
+  .hashtag-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  .hashtag-card {
+    background: white;
+    border: 1px solid var(--stone);
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+  }
+  .hashtag-card h4 {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--warm-muted);
+    margin-bottom: 0.75rem;
+  }
+  .hashtag-set {
+    font-size: 0.9rem;
+    color: var(--terracotta);
+    line-height: 1.8;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    transition: background 0.2s;
+  }
+  .hashtag-set:hover { background: var(--cream-alt); }
+
+  /* DM Templates */
+  .dm-card {
+    background: white;
+    border: 1px solid var(--stone);
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+    margin-bottom: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .dm-card:hover { border-color: var(--terracotta); }
+  .dm-card .dm-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--warm-muted);
+    margin-bottom: 0.5rem;
+  }
+  .dm-card .dm-text {
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+  .copied-toast {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: var(--warm-text);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 2rem;
+    font-size: 0.85rem;
+    transition: transform 0.3s;
+    z-index: 100;
+  }
+  .copied-toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* Metrics */
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+  }
+  .metrics-grid .m-header {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--warm-muted);
+    padding: 0.5rem;
+    font-weight: 600;
+  }
+  .metrics-grid .m-cell {
+    background: white;
+    border: 1px solid var(--stone);
+    border-radius: 0.5rem;
+    padding: 0.75rem;
+    text-align: center;
+  }
+  .metrics-grid .m-cell .m-value {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.2rem;
+    color: var(--terracotta);
+  }
+  .metrics-grid .m-cell .m-label {
+    font-size: 0.7rem;
+    color: var(--warm-light);
+  }
+
+  /* Checklist */
+  .checklist { list-style: none; }
+  .checklist li {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--cream-alt);
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    font-size: 0.9rem;
+  }
+  .checklist li input[type="checkbox"] {
+    margin-top: 0.2rem;
+    accent-color: var(--terracotta);
+    width: 16px;
+    height: 16px;
+  }
+
+  /* Tools link */
+  .tool-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    background: var(--warm-text);
+    color: white;
+    text-decoration: none;
+    border-radius: 0.5rem;
+    font-size: 0.9rem;
+    transition: background 0.2s;
+    margin-bottom: 1rem;
+  }
+  .tool-link:hover { background: var(--terracotta); }
+
+  h2.section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 400;
+    font-size: 1.5rem;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--stone);
+  }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+  @media (max-width: 900px) {
+    main { padding: 1rem; }
+    header { padding: 1rem; }
+    nav { padding: 0 1rem; }
+    .calendar-grid { grid-template-columns: 1fr; }
+    .grid-2 { grid-template-columns: 1fr; }
+    .metrics-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>EVA <span>&middot;</span> Campaign Dashboard</h1>
+  <div class="header-meta">
+    <div>Da Zero a Comunità</div>
+    <div><strong>14 Marzo 2026</strong> &middot; Genova</div>
+    <div id="countdown-display"></div>
+  </div>
+</header>
+
+<nav>
+  <button class="active" data-section="overview">Panoramica</button>
+  <button data-section="calendar">Calendario</button>
+  <button data-section="content">Contenuti</button>
+  <button data-section="hashtags">Hashtag & DM</button>
+  <button data-section="metrics">Metriche</button>
+  <button data-section="checklist">Checklist</button>
+</nav>
+
+<main>
+
+<!-- ===== OVERVIEW ===== -->
+<div class="section active" id="section-overview">
+  <div class="overview-grid">
+    <div class="stat-card">
+      <div class="label">Settimane all'evento</div>
+      <div class="value" id="weeks-left">—</div>
+      <div class="detail">14 Marzo 2026</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Serie Attive</div>
+      <div class="value">8</div>
+      <div class="detail">La Domanda, Per Strada, Lettere, Genova, Alice, Mani, Donne, Specchio</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Post Feed Pianificati</div>
+      <div class="value">28</div>
+      <div class="detail">5 settimane di contenuti</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Posti Evento</div>
+      <div class="value">25</div>
+      <div class="detail">Dimora Almayer, Centro Storico</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Obiettivo Follower</div>
+      <div class="value">800+</div>
+      <div class="detail">Al giorno dell'evento</div>
+    </div>
+  </div>
+
+  <div class="progress-section">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <h2 class="section-title" style="border:none;margin:0;padding:0;">Il Cammino verso il 14 Marzo</h2>
+    </div>
+    <div class="progress-bar-container">
+      <div class="progress-bar" id="campaign-progress" style="width:0%"></div>
+    </div>
+    <div class="progress-labels">
+      <span>11 Feb — Il Seme</span>
+      <span>18 Feb — Le Radici</span>
+      <span>25 Feb — Il Fuoco</span>
+      <span>4 Mar — L'Invito</span>
+      <span>14 Mar — L'Incontro</span>
+    </div>
+  </div>
+
+  <a href="card-generator.html" class="tool-link">Apri Card Generator →</a>
+
+  <h2 class="section-title">Il Filo d'Oro — La Domanda Guida</h2>
+  <div class="content-card" style="border-color:var(--muted-gold);cursor:default;">
+    <div class="content-text" style="font-size:1.3rem;color:var(--muted-gold);font-style:italic;">"Cosa ti fa sentire bella?"</div>
+    <div class="content-meta">
+      <span>Street interviews</span>
+      <span>Question cards</span>
+      <span>Stories polls</span>
+      <span>DMs</span>
+      <span>Parete d'Oro</span>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CALENDAR ===== -->
+<div class="section" id="section-calendar">
+  <div id="calendar-container"></div>
+</div>
+
+<!-- ===== CONTENT BANK ===== -->
+<div class="section" id="section-content">
+  <a href="card-generator.html" class="tool-link">Apri Card Generator →</a>
+  <div id="content-container"></div>
+</div>
+
+<!-- ===== HASHTAGS & DM ===== -->
+<div class="section" id="section-hashtags">
+  <h2 class="section-title">Set di Hashtag</h2>
+  <p style="font-size:0.85rem;color:var(--warm-muted);margin-bottom:1rem;">Clicca su un set per copiarlo. Usa 5-8 hashtag per post, ruota i set.</p>
+  <div class="hashtag-grid">
+    <div class="hashtag-card">
+      <h4>Set A — Locale + Brand</h4>
+      <div class="hashtag-set" onclick="copyText(this.textContent)">#genova #donneitaliane #bellezzachenutre #evathesanctuary #donnechescelgono</div>
+    </div>
+    <div class="hashtag-card">
+      <h4>Set B — Città + Comunità</h4>
+      <div class="hashtag-set" onclick="copyText(this.textContent)">#genovacity #comunitàfemminile #bellezzaautentica #evagenova #genovacentrostorico</div>
+    </div>
+    <div class="hashtag-card">
+      <h4>Set C — Misto</h4>
+      <div class="hashtag-set" onclick="copyText(this.textContent)">#genova #donnegenovesi #bellezzachenutre #evathesanctuary #comunitàfemminile</div>
+    </div>
+    <div class="hashtag-card">
+      <h4>Set D — Evento</h4>
+      <div class="hashtag-set" onclick="copyText(this.textContent)">#evathesanctuary #evagenova #genova #bellezzachenutre #14marzo #donnechescelgono</div>
+    </div>
+  </div>
+
+  <h2 class="section-title">Template DM</h2>
+  <p style="font-size:0.85rem;color:var(--warm-muted);margin-bottom:1rem;">Clicca su un template per copiarlo. Personalizza sempre con il nome della donna.</p>
+
+  <div class="dm-card" onclick="copyText('Ciao [nome], grazie di essere qui. Se hai voglia, dimmi: cosa ti ha portata qui?')">
+    <div class="dm-label">Benvenuto — Nuova follower</div>
+    <div class="dm-text">Ciao [nome], grazie di essere qui. Se hai voglia, dimmi: cosa ti ha portata qui?</div>
+  </div>
+  <div class="dm-card" onclick="copyText('Grazie per quello che hai scritto. Mi ha colpita. Ti va di raccontarmi di più?')">
+    <div class="dm-label">Risposta a commento/poll</div>
+    <div class="dm-text">Grazie per quello che hai scritto. Mi ha colpita. Ti va di raccontarmi di più?</div>
+  </div>
+  <div class="dm-card" onclick="copyText('Ho visto che hai condiviso il nostro post — grazie di cuore. Cosa ti ha colpita?')">
+    <div class="dm-label">Ringraziamento per condivisione</div>
+    <div class="dm-text">Ho visto che hai condiviso il nostro post — grazie di cuore. Cosa ti ha colpita?</div>
+  </div>
+  <div class="dm-card" onclick="copyText('Stiamo organizzando qualcosa di speciale a Genova il 14 marzo. Un pomeriggio per 25 donne. Ti ci vedi?')">
+    <div class="dm-label">Invito soft all'evento</div>
+    <div class="dm-text">Stiamo organizzando qualcosa di speciale a Genova il 14 marzo. Un pomeriggio per 25 donne. Ti ci vedi?</div>
+  </div>
+  <div class="dm-card" onclick="copyText('Il 14 marzo, dalle 14 alle 19, in una dimora storica nel centro di Genova. Tè, ceramica, profumi, tarocchi, e soprattutto: connessione. È gratuito. Se vuoi saperne di più, scrivimi su WhatsApp: +39 348 5284327')">
+    <div class="dm-label">Dettagli evento completi</div>
+    <div class="dm-text">Il 14 marzo, dalle 14 alle 19, in una dimora storica nel centro di Genova. Tè, ceramica, profumi, tarocchi, e soprattutto: connessione. È gratuito. Se vuoi saperne di più, scrivimi su WhatsApp: +39 348 5284327</div>
+  </div>
+
+  <h2 class="section-title" style="margin-top:2rem;">WhatsApp Bridge</h2>
+  <div class="content-card" style="cursor:default;">
+    <div class="content-text" style="font-size:1rem;font-family:'DM Sans',sans-serif;">
+      <strong>Principio:</strong> Instagram attrae. WhatsApp converte.<br><br>
+      Ogni post sull'evento finisce con: <em>"Scrivimi su WhatsApp"</em><br>
+      Non un link tree, non un form — una persona.<br><br>
+      <strong>WhatsApp:</strong> +39 348 5284327 (Alice)
+    </div>
+  </div>
+</div>
+
+<!-- ===== METRICS ===== -->
+<div class="section" id="section-metrics">
+  <h2 class="section-title">Obiettivi per Settimana</h2>
+  <div class="metrics-grid">
+    <div class="m-header">Metrica</div>
+    <div class="m-header">Sett. 1</div>
+    <div class="m-header">Sett. 2</div>
+    <div class="m-header">Sett. 3</div>
+    <div class="m-header">Sett. 4</div>
+
+    <div class="m-cell"><div class="m-label">Follower</div></div>
+    <div class="m-cell"><div class="m-value">50-100</div></div>
+    <div class="m-cell"><div class="m-value">200-300</div></div>
+    <div class="m-cell"><div class="m-value">400-500</div></div>
+    <div class="m-cell"><div class="m-value">600-800</div></div>
+
+    <div class="m-cell"><div class="m-label">Views Reel (media)</div></div>
+    <div class="m-cell"><div class="m-value">200-500</div></div>
+    <div class="m-cell"><div class="m-value">500-1K</div></div>
+    <div class="m-cell"><div class="m-value">1K-3K</div></div>
+    <div class="m-cell"><div class="m-value">2K-5K</div></div>
+
+    <div class="m-cell"><div class="m-label">RSVP Evento</div></div>
+    <div class="m-cell"><div class="m-value">0</div></div>
+    <div class="m-cell"><div class="m-value">3-5</div></div>
+    <div class="m-cell"><div class="m-value">10-15</div></div>
+    <div class="m-cell"><div class="m-value">20-25</div></div>
+
+    <div class="m-cell"><div class="m-label">Conversazioni DM</div></div>
+    <div class="m-cell"><div class="m-value">10-20</div></div>
+    <div class="m-cell"><div class="m-value">30-50</div></div>
+    <div class="m-cell"><div class="m-value">50-80</div></div>
+    <div class="m-cell"><div class="m-value">80-100</div></div>
+  </div>
+
+  <h2 class="section-title">Tempo Settimanale Stimato</h2>
+  <div class="grid-2">
+    <div class="content-card" style="cursor:default;">
+      <div class="dm-label">Domenica</div>
+      <div class="dm-text">Pianifica la settimana. Scrivi caption. Crea 2-3 card di testo.</div>
+    </div>
+    <div class="content-card" style="cursor:default;">
+      <div class="dm-label">1-2 Pomeriggi</div>
+      <div class="dm-text">Filma interviste per strada (4-6 per sessione) + foto Genova/Mani.</div>
+    </div>
+    <div class="content-card" style="cursor:default;">
+      <div class="dm-label">Ogni Giorno (10 min)</div>
+      <div class="dm-text">Posta Stories, rispondi ai DM, interagisci con altri account.</div>
+    </div>
+    <div class="content-card" style="cursor:default;">
+      <div class="dm-label">Totale</div>
+      <div class="dm-text" style="color:var(--terracotta);font-weight:500;">~5-7 ore / settimana</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CHECKLIST ===== -->
+<div class="section" id="section-checklist">
+  <h2 class="section-title">Settimana 1 — Il Seme (11-17 Feb)</h2>
+  <ul class="checklist" id="checklist-w1">
+    <li><input type="checkbox" onchange="saveChecklist()"> Profilo live: foto, bio, link in bio → eva.community</li>
+    <li><input type="checkbox" onchange="saveChecklist()"> Primo post: foto Genova + "Qualcosa sta nascendo."</li>
+    <li><input type="checkbox" onchange="saveChecklist()"> 3 Stories: vista dalla finestra, tazza calda, "Ciao, sono Alice."</li>
+    <li><input type="checkbox" onchange="saveChecklist()"> DM a 20 donne: "Ho creato una cosa. Ti va di seguirla?"</li>
+    <li><input type="checkbox" onchange="saveChecklist()"> Follow 30-50 account: donne genovesi, attività locali</li>
+    <li><input type="checkbox" onchange="saveChecklist()"> La Domanda #1 — card + Stories con sticker domanda</li>
+    <li><input type="checkbox" onchange="saveChecklist()"> Alice Parla #1: "Perché ho creato EVA" (Reel)</li>
+    <li><input type="checkbox" onchange="saveChecklist()"> Genova che Nutre #1 (location shot)</li>
+    <li><input type="checkbox" onchange="saveChecklist()"> Lettere #1: prima lettera</li>
+    <li><input type="checkbox" onchange="saveChecklist()"> Filmare batch #1 interviste per strada (4-6 donne)</li>
+    <li><input type="checkbox" onchange="saveChecklist()"> Creare Highlights: CHI, DOMANDE, GENOVA</li>
+  </ul>
+
+  <h2 class="section-title" style="margin-top:2rem;">Settimana 2 — Le Radici (18-24 Feb)</h2>
+  <ul class="checklist" id="checklist-w2">
+    <li><input type="checkbox" onchange="saveChecklist()"> La Domanda #2</li>
+    <li><input type="checkbox" onchange="saveChecklist()"> Per Strada #1: primo Reel intervista</li>
+    <li><input type="checkbox" onchange="saveChecklist()"> Mani #1: prima foto mani</li>
+    <li><input type="checkbox" onchange="saveChecklist()"> Alice Parla #2: "Cosa NON è EVA" (Stories)</li>
+    <li><input type="checkbox" onchange="saveChecklist()"> Per Strada #2: seconda intervista</li>
+    <li><input type="checkbox" onchange="saveChecklist()"> La Domanda #3</li>
+    <li><input type="checkbox" onchange="saveChecklist()"> Genova che Nutre #2</li>
+    <li><input type="checkbox" onchange="saveChecklist()"> Condividere EVA in 2-3 gruppi WhatsApp</li>
+    <li><input type="checkbox" onchange="saveChecklist()"> Filmare batch #2 interviste (4-6 donne)</li>
+    <li><input type="checkbox" onchange="saveChecklist()"> Creare Highlight: DONNE</li>
+  </ul>
+
+  <h2 class="section-title" style="margin-top:2rem;">Settimana 3 — Il Fuoco (25 Feb - 3 Mar)</h2>
+  <ul class="checklist" id="checklist-w3">
+    <li><input type="checkbox" onchange="saveChecklist()"> Per Strada #3</li>
+    <li><input type="checkbox" onchange="saveChecklist()"> Lettere #2</li>
+    <li><input type="checkbox" onchange="saveChecklist()"> THE REVEAL: "14 marzo. Genova. 25 donne." — post + Stories completa</li>
+    <li><input type="checkbox" onchange="saveChecklist()"> La Domanda #4</li>
+    <li><input type="checkbox" onchange="saveChecklist()"> Alice Parla #3: "La storia del nome EVA"</li>
+    <li><input type="checkbox" onchange="saveChecklist()"> Le Donne di EVA #1: primo partner</li>
+    <li><input type="checkbox" onchange="saveChecklist()"> Per Strada #4</li>
+    <li><input type="checkbox" onchange="saveChecklist()"> Mani #2</li>
+    <li><input type="checkbox" onchange="saveChecklist()"> Cross-post con partner</li>
+    <li><input type="checkbox" onchange="saveChecklist()"> Creare Highlight: 14 MARZO</li>
+  </ul>
+
+  <h2 class="section-title" style="margin-top:2rem;">Settimana 4 — L'Invito (4-10 Mar)</h2>
+  <ul class="checklist" id="checklist-w4">
+    <li><input type="checkbox" onchange="saveChecklist()"> Le Donne di EVA #2: secondo partner</li>
+    <li><input type="checkbox" onchange="saveChecklist()"> Countdown nelle Stories (10 giorni)</li>
+    <li><input type="checkbox" onchange="saveChecklist()"> DM personali a follower attive: "Ti ci vedi?"</li>
+    <li><input type="checkbox" onchange="saveChecklist()"> La Domanda #5</li>
+    <li><input type="checkbox" onchange="saveChecklist()"> Per Strada #5 (la migliore — salvata per questa settimana)</li>
+    <li><input type="checkbox" onchange="saveChecklist()"> Alice Parla #4: "Il 14 marzo — cosa sto preparando"</li>
+    <li><input type="checkbox" onchange="saveChecklist()"> Lettere #3</li>
+    <li><input type="checkbox" onchange="saveChecklist()"> Le Donne di EVA #3: terzo partner</li>
+    <li><input type="checkbox" onchange="saveChecklist()"> Genova che Nutre #3: quartiere dell'evento</li>
+    <li><input type="checkbox" onchange="saveChecklist()"> La Domanda #6 (la più profonda)</li>
+  </ul>
+
+  <h2 class="section-title" style="margin-top:2rem;">Settimana 5 — L'Incontro (11-14+ Mar)</h2>
+  <ul class="checklist" id="checklist-w5">
+    <li><input type="checkbox" onchange="saveChecklist()"> Per Strada #6: ultima intervista</li>
+    <li><input type="checkbox" onchange="saveChecklist()"> Lettere #4: "Alla donna che verrà sabato"</li>
+    <li><input type="checkbox" onchange="saveChecklist()"> Alice to camera: "Domani. Vi aspetto."</li>
+    <li><input type="checkbox" onchange="saveChecklist()"> Designare un'amica per foto/video durante l'evento</li>
+    <li><input type="checkbox" onchange="saveChecklist()"> EVENTO: Stories in tempo reale — lo spazio, le donne, la Parete d'Oro</li>
+    <li><input type="checkbox" onchange="saveChecklist()"> Post post-evento: la Parete d'Oro piena di risposte</li>
+    <li><input type="checkbox" onchange="saveChecklist()"> Stories di gratitudine + volti delle donne (con permesso)</li>
+    <li><input type="checkbox" onchange="saveChecklist()"> Carousel: "Cosa è successo il 14 marzo"</li>
+    <li><input type="checkbox" onchange="saveChecklist()"> DM di ringraziamento a ogni partecipante</li>
+  </ul>
+</div>
+
+</main>
+
+<div class="copied-toast" id="toast">Copiato!</div>
+
+<script>
+// ===== CALENDAR DATA =====
+const calendarData = [
+  {
+    week: 1,
+    title: "Il Seme",
+    subtitle: "Establish the visual world. Plant curiosity. First 50-100 followers.",
+    dates: "11–17 Febbraio",
+    days: [
+      { date: "11 Feb", day: "Mar", items: [
+        { type: "feed", series: "Lancio", text: "Profilo live. Primo post: foto Genova + 'Qualcosa sta nascendo.'" },
+        { type: "stories", series: "Intro", text: "3 Stories: vista finestra, tazza calda, 'Ciao, sono Alice.'" },
+        { type: "action", series: "DM", text: "DM a 20 donne conosciute" }
+      ]},
+      { date: "12 Feb", day: "Mer", items: [
+        { type: "feed", series: "La Domanda", text: "#1 — Prima domanda" },
+        { type: "stories", series: "Lo Specchio", text: "Poll: 'Ti dedichi qualcosa di bello ogni giorno?'" },
+        { type: "action", series: "Growth", text: "Follow 30-50 account genovesi" }
+      ]},
+      { date: "13 Feb", day: "Gio", items: [
+        { type: "stories", series: "Alice Parla", text: "Clip preview del Reel #1" }
+      ]},
+      { date: "14 Feb", day: "Ven", items: [
+        { type: "reel", series: "Alice Parla", text: "#1: 'Perché ho creato EVA'" },
+        { type: "stories", series: "Behind", text: "'Sto filmando qualcosa in centro...'" }
+      ]},
+      { date: "15 Feb", day: "Sab", items: [
+        { type: "feed", series: "Genova", text: "#1 — Beautiful location shot" },
+        { type: "action", series: "Filming", text: "Filmare 4-6 interviste per strada (batch #1)" }
+      ]},
+      { date: "16 Feb", day: "Dom", items: [
+        { type: "feed", series: "Lettere", text: "#1 — Prima lettera 'Alla donna stanca'" },
+        { type: "stories", series: "Lo Specchio", text: "Quiet Sunday: libro, tè, 'Come stai oggi? Davvero.'" }
+      ]},
+      { date: "17 Feb", day: "Lun", items: [
+        { type: "stories", series: "Lo Specchio", text: "Engagement quotidiano" }
+      ]}
+    ]
+  },
+  {
+    week: 2,
+    title: "Le Radici",
+    subtitle: "Start street interviews. Build engagement loops. 200+ followers.",
+    dates: "18–24 Febbraio",
+    days: [
+      { date: "18 Feb", day: "Lun", items: [
+        { type: "feed", series: "La Domanda", text: "#2" },
+        { type: "stories", series: "Lo Specchio", text: "Question box: risposte alla domanda della settimana scorsa" },
+        { type: "action", series: "Growth", text: "Condividere EVA in 2-3 gruppi WhatsApp" }
+      ]},
+      { date: "19 Feb", day: "Mar", items: [
+        { type: "reel", series: "Per Strada", text: "#1 — Primo Reel intervista!" },
+        { type: "stories", series: "Behind", text: "Reazioni, behind the scenes" }
+      ]},
+      { date: "20 Feb", day: "Mer", items: [
+        { type: "feed", series: "Mani", text: "#1 — Prima foto mani" },
+        { type: "stories", series: "Lo Specchio", text: "This or That" }
+      ]},
+      { date: "21 Feb", day: "Gio", items: [
+        { type: "stories", series: "Alice Parla", text: "#2: 'Cosa NON è EVA' (4-5 clips)" }
+      ]},
+      { date: "22 Feb", day: "Ven", items: [
+        { type: "reel", series: "Per Strada", text: "#2 — Seconda intervista" },
+        { type: "stories", series: "Lo Specchio", text: "Slider + risposte" }
+      ]},
+      { date: "23 Feb", day: "Sab", items: [
+        { type: "feed", series: "La Domanda", text: "#3" },
+        { type: "action", series: "Filming", text: "Filmare 4-6 interviste (batch #2)" }
+      ]},
+      { date: "24 Feb", day: "Dom", items: [
+        { type: "feed", series: "Genova", text: "#2" },
+        { type: "stories", series: "Lo Specchio", text: "Soft Sunday: 'Una cosa che mi ha nutrito questa settimana...'" }
+      ]}
+    ]
+  },
+  {
+    week: 3,
+    title: "Il Fuoco",
+    subtitle: "Reveal the event. Introduce partners. Build elegant FOMO. 400+ followers.",
+    dates: "25 Feb – 3 Marzo",
+    days: [
+      { date: "25 Feb", day: "Lun", items: [
+        { type: "reel", series: "Per Strada", text: "#3" },
+        { type: "stories", series: "Lo Specchio", text: "Condividere risposte della settimana" }
+      ]},
+      { date: "26 Feb", day: "Mar", items: [
+        { type: "feed", series: "Lettere", text: "#2" },
+        { type: "stories", series: "Lo Specchio", text: "'Se potessi passare un pomeriggio con 25 donne in un palazzo storico...'" }
+      ]},
+      { date: "27 Feb", day: "Mer", items: [
+        { type: "feed", series: "THE REVEAL", text: "'14 marzo. Genova. 25 donne. La Bellezza che Nutre.'" },
+        { type: "stories", series: "Evento", text: "Full sequence: cos'è l'evento, come partecipare, WhatsApp" },
+        { type: "action", series: "Partners", text: "Condividere con partner, chiedere repost" }
+      ]},
+      { date: "28 Feb", day: "Gio", items: [
+        { type: "feed", series: "La Domanda", text: "#4" },
+        { type: "stories", series: "Alice Parla", text: "#3: 'La storia del nome EVA'" }
+      ]},
+      { date: "1 Mar", day: "Ven", items: [
+        { type: "feed", series: "Le Donne", text: "#1 — Primo partner (Martina Geroni)" },
+        { type: "stories", series: "Partners", text: "Behind the scenes del mondo della partner" },
+        { type: "action", series: "Partners", text: "Cross-post con partner" }
+      ]},
+      { date: "2 Mar", day: "Sab", items: [
+        { type: "reel", series: "Per Strada", text: "#4" },
+        { type: "stories", series: "Lo Specchio", text: "Question box: 'Cosa ti piacerebbe trovare in uno spazio per donne?'" }
+      ]},
+      { date: "3 Mar", day: "Dom", items: [
+        { type: "feed", series: "Mani", text: "#2" },
+        { type: "stories", series: "Lo Specchio", text: "Risposte round-up" }
+      ]}
+    ]
+  },
+  {
+    week: 4,
+    title: "L'Invito",
+    subtitle: "Fill the 25 spots. Deepen connection. Create anticipation. 600+ followers.",
+    dates: "4–10 Marzo",
+    days: [
+      { date: "4 Mar", day: "Lun", items: [
+        { type: "feed", series: "Le Donne", text: "#2 — La Strega del Castello" },
+        { type: "stories", series: "Countdown", text: "Countdown inizia (10 giorni)" },
+        { type: "action", series: "DM", text: "DM personali a follower attive: 'Ti ci vedi?'" }
+      ]},
+      { date: "5 Mar", day: "Mar", items: [
+        { type: "feed", series: "La Domanda", text: "#5" },
+        { type: "stories", series: "Evento", text: "Risposte da donne che hanno RSVP'd" }
+      ]},
+      { date: "6 Mar", day: "Mer", items: [
+        { type: "reel", series: "Per Strada", text: "#5 — La migliore" },
+        { type: "stories", series: "Alice Parla", text: "#4: 'Il 14 marzo — cosa sto preparando'" }
+      ]},
+      { date: "7 Mar", day: "Gio", items: [
+        { type: "feed", series: "Lettere", text: "#3" },
+        { type: "stories", series: "Lo Specchio", text: "'Mancano 7 giorni. Cosa vorresti sentirti dire?'" }
+      ]},
+      { date: "8 Mar", day: "Ven", items: [
+        { type: "feed", series: "Le Donne", text: "#3 — Teaps" },
+        { type: "stories", series: "Teaser", text: "Dettagli preparazione: card, penne, fiori, tè" }
+      ]},
+      { date: "9 Mar", day: "Sab", items: [
+        { type: "feed", series: "Genova", text: "#3 — Il quartiere dell'evento" },
+        { type: "stories", series: "Walk", text: "'Walking to the venue' — caruggi, luce, porte" }
+      ]},
+      { date: "10 Mar", day: "Dom", items: [
+        { type: "feed", series: "La Domanda", text: "#6 — La più profonda" },
+        { type: "stories", series: "Countdown", text: "'Tra 4 giorni.'" }
+      ]}
+    ]
+  },
+  {
+    week: 5,
+    title: "L'Incontro",
+    subtitle: "Final momentum. Day-of content. Post-event glow.",
+    dates: "11–16+ Marzo",
+    days: [
+      { date: "11 Mar", day: "Lun", items: [
+        { type: "reel", series: "Per Strada", text: "#6 — Ultima intervista" },
+        { type: "stories", series: "Countdown", text: "'Questa settimana.'" },
+        { type: "action", series: "DM", text: "Last call DMs a donne indecise" }
+      ]},
+      { date: "12 Mar", day: "Mar", items: [
+        { type: "feed", series: "Lettere", text: "#4: 'Alla donna che verrà sabato'" },
+        { type: "stories", series: "Prep", text: "Fiori, card, venue in preparazione" }
+      ]},
+      { date: "13 Mar", day: "Mer", items: [
+        { type: "stories", series: "Alice", text: "Alice to camera: 'Domani. Non ci credo. Vi aspetto.'" }
+      ]},
+      { date: "14 Mar", day: "SAB ★", items: [
+        { type: "stories", series: "EVENTO", text: "Stories in tempo reale: lo spazio, le donne, la Parete d'Oro" },
+        { type: "action", series: "Evento", text: "Un'amica designata filma/fotografa i momenti chiave" }
+      ]},
+      { date: "15 Mar", day: "Dom", items: [
+        { type: "feed", series: "Post-evento", text: "Prima immagine: la Parete d'Oro piena di risposte" },
+        { type: "stories", series: "Gratitudine", text: "Volti delle donne (con permesso). La magia." }
+      ]},
+      { date: "16 Mar", day: "Lun+", items: [
+        { type: "feed", series: "Post-evento", text: "Carousel: 'Cosa è successo il 14 marzo'" },
+        { type: "action", series: "DM", text: "DM di ringraziamento a ogni partecipante" }
+      ]},
+      { date: "", day: "", items: [] }
+    ]
+  }
+];
+
+// ===== CONTENT BANK DATA =====
+const contentSeries = [
+  {
+    name: "La Domanda",
+    freq: "2x/settimana",
+    items: [
+      { text: "Qual è l'ultima cosa che hai fatto solo perché ti andava — senza spiegarlo a nessuno?", meta: ["Sett. 1", "12 Feb", "Card Generator"] },
+      { text: "Se dovessi descrivere come ti senti adesso con un profumo, quale sarebbe?", meta: ["Sett. 2", "18 Feb"] },
+      { text: "Quando è stata l'ultima volta che ti sei guardata allo specchio e ti sei piaciuta?", meta: ["Sett. 2", "23 Feb"] },
+      { text: "C'è una donna nella tua vita che ti ha insegnato cos'è la bellezza senza mai parlarne?", meta: ["Sett. 3", "28 Feb"] },
+      { text: "Cosa faresti questo sabato se non dovessi rendere conto a nessuno?", meta: ["Sett. 4", "5 Mar"] },
+      { text: "Quale parte di te hai smesso di ascoltare?", meta: ["Sett. 4", "10 Mar"] },
+      { text: "Qual è il gesto più bello che qualcuno ha fatto per te e che non hai mai raccontato?", meta: ["Extra"] },
+      { text: "Se potessi regalare un'ora a te stessa — un'ora perfetta — come sarebbe?", meta: ["Extra"] },
+      { text: "Cosa ti fa sentire bella? E non intendo esteticamente.", meta: ["Il Filo d'Oro"] }
+    ]
+  },
+  {
+    name: "Per Strada — Domande Intervista",
+    freq: "1-2x/settimana",
+    items: [
+      { text: "Cosa ti fa sentire bella? E non intendo esteticamente.", meta: ["Il Filo d'Oro", "Domanda principale"] },
+      { text: "C'è un momento nella tua giornata che è solo tuo?", meta: ["Reel 30-90s"] },
+      { text: "Se la bellezza fosse un suono, come suonerebbe per te?", meta: ["Reel 30-90s"] },
+      { text: "Qual è il consiglio più bello che ti ha dato una donna?", meta: ["Reel 30-90s"] },
+      { text: "Quando ti senti più viva?", meta: ["Reel 30-90s"] },
+      { text: "Cosa diresti alla te di dieci anni fa?", meta: ["Reel 30-90s"] },
+      { text: "Se potessi insegnare una cosa a tutte le donne, quale sarebbe?", meta: ["Reel 30-90s"] }
+    ]
+  },
+  {
+    name: "Lettere a una donna che non conosco",
+    freq: "1x/settimana",
+    items: [
+      { text: "Alla donna che stasera sta scrollando il telefono\nperché non ha più energia per nient'altro:\n\nsei stanca perché dai tanto.\nNon perché sei rotta.\n\nC'è differenza.", meta: ["Sett. 1", "16 Feb", "Card Generator"] },
+      { text: "Alla donna che ha smesso di dedicarsi cose belle\nperché c'era sempre qualcosa di più urgente:\n\nNiente è più urgente di te.\nNiente.", meta: ["Sett. 3", "26 Feb"] },
+      { text: "Alla donna che non sa se è abbastanza:\n\nSei così abbastanza\nche la stanza cambia quando entri.\nE forse non te ne accorgi.\nMa le altre donne sì.", meta: ["Sett. 4", "7 Mar"] },
+      { text: "Alla donna che verrà sabato:\n\nnon devi essere pronta.\nNon devi sapere cosa aspettarti.\nDevi solo venire come sei.\n\nNoi ti aspettiamo.\nCon tè caldo e domande belle.\nE la luce giusta.", meta: ["Sett. 5", "12 Mar"] }
+    ]
+  },
+  {
+    name: "Alice Parla — Temi",
+    freq: "1x/settimana",
+    items: [
+      { text: "Perché ho creato EVA — l'origine, la mela, la scelta. Raw, onesta, 90 secondi.", meta: ["Sett. 1", "14 Feb", "Reel"] },
+      { text: "Cosa NON è EVA — non un workshop, non un circle, non un sales funnel. Un esperimento.", meta: ["Sett. 2", "21 Feb", "Stories 4-5 clips"] },
+      { text: "La storia del nome — Eva, la donna che ha scelto. Perché riscriviamo quella storia.", meta: ["Sett. 3", "28 Feb", "Stories"] },
+      { text: "Il 14 marzo — cosa sto preparando. Come sarà. L'invito.", meta: ["Sett. 4", "6 Mar", "Stories"] }
+    ]
+  },
+  {
+    name: "Le Donne di EVA — Partner",
+    freq: "Ultime 2 settimane",
+    items: [
+      { text: "C'è una donna a Genova che trasforma l'argilla in qualcosa che vuoi tenere tra le mani per sempre. — Martina Geroni, Ceramista", meta: ["Sett. 3", "1 Mar"] },
+      { text: "C'è una farmacia di famiglia che è diventata un laboratorio di profumi. La donna che la guida si chiama Caterina. — La Strega del Castello", meta: ["Sett. 4", "4 Mar"] },
+      { text: "Due ragazzi che hanno trasformato una tazza di tè in un atto di cura. Il 14 marzo, la cura è per voi. — Teaps", meta: ["Sett. 4", "8 Mar"] }
+    ]
+  }
+];
+
+// ===== INIT =====
+document.addEventListener('DOMContentLoaded', () => {
+  // Nav
+  document.querySelectorAll('nav button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.getElementById(`section-${btn.dataset.section}`).classList.add('active');
+    });
+  });
+
+  renderCalendar();
+  renderContent();
+  updateCountdown();
+  loadChecklist();
+  setInterval(updateCountdown, 60000);
+});
+
+function updateCountdown() {
+  const event = new Date('2026-03-14T14:00:00');
+  const now = new Date();
+  const diff = event - now;
+  const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
+  const weeks = Math.ceil(days / 7);
+
+  document.getElementById('countdown-display').innerHTML = `<strong>${days} giorni</strong> all'evento`;
+  document.getElementById('weeks-left').textContent = weeks;
+
+  // Progress (campaign is 33 days: Feb 11 - Mar 14)
+  const start = new Date('2026-02-11');
+  const total = event - start;
+  const elapsed = now - start;
+  const pct = Math.max(0, Math.min(100, (elapsed / total) * 100));
+  document.getElementById('campaign-progress').style.width = pct + '%';
+}
+
+function renderCalendar() {
+  const container = document.getElementById('calendar-container');
+  const today = new Date().toLocaleDateString('it-IT', { day: 'numeric', month: 'short' });
+
+  container.innerHTML = calendarData.map(week => {
+    const now = new Date();
+    const weekStart = parseItalianDate(week.days[0]?.date);
+    const weekEnd = parseItalianDate(week.days[week.days.length - 2]?.date || week.days[week.days.length - 1]?.date);
+    let badge = 'upcoming';
+    if (now >= weekStart && now <= new Date(weekEnd.getTime() + 86400000)) badge = 'current';
+    else if (now > weekEnd) badge = 'past';
+
+    return `
+      <div class="week-section">
+        <div class="week-header">
+          <span class="week-badge ${badge}">Settimana ${week.week}</span>
+          <h2>${week.title}</h2>
+          <span class="week-subtitle">${week.dates} — ${week.subtitle}</span>
+        </div>
+        <div class="calendar-grid">
+          ${week.days.map(day => {
+            if (!day.date) return '<div></div>';
+            return `
+              <div class="day-card ${isToday(day.date) ? 'today' : ''}">
+                <div class="day-date"><strong>${day.day}</strong> ${day.date}</div>
+                ${day.items.map(item => `
+                  <div class="day-item ${item.type}">
+                    <div class="series-tag">${item.series}</div>
+                    ${item.text}
+                  </div>
+                `).join('')}
+              </div>
+            `;
+          }).join('')}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderContent() {
+  const container = document.getElementById('content-container');
+  container.innerHTML = contentSeries.map(series => `
+    <div class="series-section">
+      <div class="series-header">
+        <h3>${series.name}</h3>
+        <span class="freq">${series.freq}</span>
+      </div>
+      ${series.items.map(item => `
+        <div class="content-card" onclick="copyText(\`${item.text.replace(/`/g, "'")}\`)">
+          <div class="content-text">${item.text}</div>
+          <div class="content-meta">
+            ${item.meta.map(m => `<span>${m}</span>`).join('')}
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `).join('');
+}
+
+function parseItalianDate(str) {
+  if (!str) return new Date();
+  const months = { 'Feb': 1, 'Mar': 2 };
+  const parts = str.split(' ');
+  const day = parseInt(parts[0]);
+  const month = months[parts[1]] || 1;
+  return new Date(2026, month, day);
+}
+
+function isToday(dateStr) {
+  const d = parseItalianDate(dateStr);
+  const now = new Date();
+  return d.getDate() === now.getDate() && d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+}
+
+function copyText(text) {
+  navigator.clipboard.writeText(text).then(() => {
+    const toast = document.getElementById('toast');
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 1500);
+  });
+}
+
+function saveChecklist() {
+  const data = {};
+  for (let i = 1; i <= 5; i++) {
+    const checks = document.querySelectorAll(`#checklist-w${i} input[type="checkbox"]`);
+    data[`w${i}`] = Array.from(checks).map(c => c.checked);
+  }
+  localStorage.setItem('eva-campaign-checklist', JSON.stringify(data));
+}
+
+function loadChecklist() {
+  const stored = localStorage.getItem('eva-campaign-checklist');
+  if (!stored) return;
+  const data = JSON.parse(stored);
+  for (let i = 1; i <= 5; i++) {
+    const checks = document.querySelectorAll(`#checklist-w${i} input[type="checkbox"]`);
+    if (data[`w${i}`]) {
+      data[`w${i}`].forEach((val, idx) => { if (checks[idx]) checks[idx].checked = val; });
+    }
+  }
+}
+</script>
+</body>
+</html>

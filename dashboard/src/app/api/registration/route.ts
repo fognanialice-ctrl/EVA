@@ -160,6 +160,58 @@ export async function POST(request: NextRequest) {
       performed_by: 'public_form',
     })
 
+    // Create Supabase auth user and send magic link (for PWA access)
+    try {
+      // Check if this contact already has an auth user linked
+      const { data: contactRecord } = await supabase
+        .from('contacts')
+        .select('auth_user_id')
+        .eq('id', contactId)
+        .single()
+
+      if (!contactRecord?.auth_user_id) {
+        let authUserId: string | null = null
+
+        // Try to create auth user
+        const { data: authData, error: authError } = await supabase.auth.admin.createUser({
+          email,
+          email_confirm: true,
+        })
+
+        if (authData?.user && !authError) {
+          authUserId = authData.user.id
+        } else if (authError?.code === 'email_exists') {
+          // Auth user already exists (e.g. from a previous registration attempt) — find and link
+          const { data: usersData } = await supabase.auth.admin.listUsers()
+          const existingAuthUser = usersData?.users?.find((u: { email?: string }) => u.email === email)
+          if (existingAuthUser) {
+            authUserId = existingAuthUser.id
+          }
+        }
+
+        if (authUserId) {
+          // Link auth user to contact
+          await supabase
+            .from('contacts')
+            .update({ auth_user_id: authUserId })
+            .eq('id', contactId)
+
+          // Send magic link to the member
+          const appUrl = process.env.NEXT_PUBLIC_MEMBER_APP_URL || 'http://localhost:3000'
+          await supabase.auth.admin.generateLink({
+            type: 'magiclink',
+            email,
+            options: {
+              redirectTo: `${appUrl}/auth/callback`,
+            },
+          })
+        }
+      }
+    } catch (authErr) {
+      // Don't fail the registration if auth setup fails — log and continue
+      console.error('Auth setup error (non-blocking):', authErr)
+    }
+
     return NextResponse.json(
       {
         success: true,

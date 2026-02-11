@@ -1,0 +1,93 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: 'DM Sans';
+  font-style: normal;
+  font-display: swap;
+  src: url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap');
+}
+
+:root {
+  /* Base — warm neutrals */
+  --cream: #F5F0E8;
+  --cream-alt: #EDE7DC;
+  --cream-light: #FAF7F2;
+  --stone: #E8E2DA;
+  --warm-text: #2D2420;
+  --warm-muted: #6B5E54;
+  --warm-light: #9A8E86;
+
+  /* Earthy accents */
+  --terracotta: #C4704B;
+  --terracotta-hover: #B3613E;
+  --sage: #7A8B6F;
+  --sage-light: #E8EDE4;
+  --dusty-rose: #C4A0A0;
+  --ochre: #C9A84C;
+  --olive: #6B7A5E;
+
+  /* Fresco richness */
+  --burgundy: #6B2D3E;
+  --muted-gold: #B59A5B;
+  --soft-blue: #7A8FA6;
+
+  /* Functional */
+  --background: var(--cream);
+  --foreground: var(--warm-text);
+  --card-bg: #FFFFFF;
+  --card-border: var(--stone);
+  --input-border: var(--stone);
+  --input-focus: var(--terracotta);
+}
+
+@theme inline {
+  --color-cream: var(--cream);
+  --color-cream-alt: var(--cream-alt);
+  --color-cream-light: var(--cream-light);
+  --color-stone: var(--stone);
+  --color-warm-text: var(--warm-text);
+  --color-warm-muted: var(--warm-muted);
+  --color-warm-light: var(--warm-light);
+  --color-terracotta: var(--terracotta);
+  --color-terracotta-hover: var(--terracotta-hover);
+  --color-sage: var(--sage);
+  --color-sage-light: var(--sage-light);
+  --color-dusty-rose: var(--dusty-rose);
+  --color-ochre: var(--ochre);
+  --color-olive: var(--olive);
+  --color-burgundy: var(--burgundy);
+  --color-muted-gold: var(--muted-gold);
+  --color-soft-blue: var(--soft-blue);
+  --color-card-bg: var(--card-bg);
+  --color-card-border: var(--card-border);
+  --color-input-border: var(--input-border);
+  --color-input-focus: var(--input-focus);
+  --font-display: 'Playfair Display', serif;
+  --font-sans: 'DM Sans', sans-serif;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100dvh;
+}
+
+/* Focus ring */
+*:focus-visible {
+  outline: 2px solid var(--terracotta);
+  outline-offset: 2px;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Safe area support for PWA */
+body {
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+}

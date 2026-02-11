@@ -53,20 +53,20 @@ ALTER TABLE event_expenses ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Authenticated users can read event_expenses"
   ON event_expenses FOR SELECT
   TO authenticated
-  USING (true);
+  USING ((SELECT auth.uid()) IS NOT NULL);
 
 CREATE POLICY "Authenticated users can insert event_expenses"
   ON event_expenses FOR INSERT
   TO authenticated
-  WITH CHECK (true);
+  WITH CHECK ((SELECT auth.uid()) IS NOT NULL);
 
 CREATE POLICY "Authenticated users can update event_expenses"
   ON event_expenses FOR UPDATE
   TO authenticated
-  USING (true)
-  WITH CHECK (true);
+  USING ((SELECT auth.uid()) IS NOT NULL)
+  WITH CHECK ((SELECT auth.uid()) IS NOT NULL);
 
 CREATE POLICY "Authenticated users can delete event_expenses"
   ON event_expenses FOR DELETE
   TO authenticated
-  USING (true);
+  USING ((SELECT auth.uid()) IS NOT NULL);
