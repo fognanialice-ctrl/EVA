@@ -22,6 +22,7 @@ Courage, Authenticity, Beauty, Connection, Nature, Joy, Generosity, Craft, Inten
 EVA/
 ├── CLAUDE.md                  # This file
 ├── EVA_SYSTEM_BRIEF.md        # Vision, principles, offer layers, positioning
+├── dashboard/                 # Admin dashboard (in progress)
 └── sprints/
     └── 01_genova_gathering/
         ├── SPRINT_BRIEF.md    # Sprint status, open decisions, deliverables
@@ -29,7 +30,14 @@ EVA/
         ├── PERSONAS.md        # 5 archetipi + personas (Giulia, Francesca, Sara, Marta, Silvana)
         └── teaser/
             ├── index.html     # Landing page (single-file, no build tools)
-            └── eva-eye.png    # Logo/icon asset
+            ├── eva-eye.png    # Logo/icon asset
+            ├── alice.png      # Founder photo (color-corrected)
+            ├── campanello.jpg # Doorbell photo (tonalized)
+            ├── dimora-salotto.jpg # Venue living room
+            ├── tarocchi.jpg   # Tarot cards photo
+            ├── te-salotto.jpg # Tea cups photo (tonalized)
+            ├── Boheme Floral.ttf  # Custom font for hero tagline
+            └── RareBird.otf   # Custom font (alternative)
 ```
 
 ## Core Principles (always respect these)
@@ -58,16 +66,18 @@ EVA/
 - **Venue:** Historic apartment, centro storico Genova (Carignano area)
 - **Capacity:** ~25 women
 - **Access:** Free for participants; vendors pay a low participation fee
-- **Key features:** Il Tè delle Due (paired tea moment), La Parete d'Oro (golden wall), 8 curated corners woven into the apartment
+- **Key features:** Il Rito delle Quattro (shared tea moment), 6 curated rooms: Profumi e cose belle, Mani che creano, La stanza della bellezza, Le carte se ti va, Qualcosa di dolce, Il rito delle quattro
 
 ## Technical Notes
 
 - The teaser site (`sprints/01_genova_gathering/teaser/index.html`) is a **single static HTML file** — no framework, no build step, no dependencies
-- Fonts: Cormorant Garamond (serif) + Outfit (sans-serif) via Google Fonts
-- Color palette: dark hero (night sky) transitioning to warm body (cream/earth tones), teal accent (#3AAFA9), gold accent (#C9A84C)
+- Fonts: Cormorant Garamond (serif) + Outfit (sans-serif) + Josefin Sans (hero subtitles) via Google Fonts; Boheme Floral (custom, local .ttf for hero tagline)
+- Color palette: dark hero (night sky) transitioning to warm body (cream/earth tones), gold accent (#c4a882 / `--muted-gold`), ochre (#C9A84C)
 - CSS is embedded in `<style>` — keep it that way for simplicity
 - Scroll-triggered fade-in animations via IntersectionObserver
-- TODOs in the HTML: founder photo placeholder, WhatsApp number placeholder
+- Registration form submits to `http://localhost:3010/api/registration`
+- Section order: Hero → Il Primo Incontro → Cosa Troverai (mosaic + dimora rooms side by side) → Come Funziona → Chi c'è dietro EVA → Ti ci vedi? → La Comunità → FAQ (accordion) → CTA Finale → Footer
+- Photo tonalization: PIL pipeline (desaturate → gold overlay → cream overlay → channel shift → brightness)
 
 ## Output Formats (when producing content)
 
