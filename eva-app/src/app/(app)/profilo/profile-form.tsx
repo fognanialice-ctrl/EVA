@@ -183,7 +183,7 @@ export default function ProfileForm({ contact }: { contact: Contact }) {
       </section>
 
       {/* Save button */}
-      <div className="sticky bottom-4 pt-2">
+      <div className="sticky bottom-22 pt-2">
         {error && (
           <div className="mb-2 rounded-xl bg-red-50 p-3 text-center text-[13px] text-red-600">
             {error}
@@ -206,7 +206,7 @@ export default function ProfileForm({ contact }: { contact: Contact }) {
       {/* Toast */}
       {saved && (
         <div
-          className="fixed bottom-24 left-1/2 z-50 -translate-x-1/2 rounded-xl px-6 py-3 text-[13px] font-medium text-white animate-in fade-in slide-in-from-bottom-2 duration-300"
+          className="fixed bottom-28 left-1/2 z-50 -translate-x-1/2 rounded-xl px-6 py-3 text-[13px] font-medium text-white animate-in fade-in slide-in-from-bottom-2 duration-300"
           style={{ background: '#3D2B1F' }}
         >
           Profilo aggiornato ✨

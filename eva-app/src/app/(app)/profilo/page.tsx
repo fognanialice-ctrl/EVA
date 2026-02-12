@@ -1,4 +1,3 @@
-import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import ProfileForm from './profile-form'
 
@@ -6,14 +5,11 @@ export default async function ProfiloPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
-  if (!user) {
-    redirect('/login')
-  }
-
+  // Auth is handled by (app)/layout.tsx — user is guaranteed here
   const { data: contact } = await supabase
     .from('contacts')
     .select('*')
-    .eq('auth_user_id', user.id)
+    .eq('auth_user_id', user!.id)
     .single()
 
   if (!contact) {

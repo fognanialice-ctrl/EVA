@@ -4,7 +4,7 @@ import { createServerClient } from '@supabase/ssr'
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
   const code = searchParams.get('code')
-  const next = searchParams.get('next') ?? '/profilo'
+  const next = searchParams.get('next') ?? '/home'
 
   if (code) {
     const supabaseResponse = NextResponse.redirect(new URL(next, request.url))
