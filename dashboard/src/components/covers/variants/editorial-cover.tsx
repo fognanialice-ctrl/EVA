@@ -31,18 +31,26 @@ export function EditorialCover({ event, theme, format, textStyle }: CoverProps) 
         }}
       />
 
-      {/* Dark gradient overlay */}
+      {/* Color overlay */}
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          background: style.overlayColor,
+          opacity: style.overlayOpacity / 100,
+        }}
+      />
+      {/* Bottom gradient for text readability */}
       <div
         style={{
           position: 'absolute',
           inset: 0,
           background: `linear-gradient(
             to bottom,
-            rgba(0,0,0,0.3) 0%,
-            rgba(0,0,0,0.15) 30%,
-            rgba(0,0,0,0.15) 50%,
-            rgba(0,0,0,0.6) 80%,
-            rgba(0,0,0,0.8) 100%
+            transparent 0%,
+            transparent 50%,
+            ${style.overlayColor}66 80%,
+            ${style.overlayColor}AA 100%
           )`,
         }}
       />
@@ -65,7 +73,7 @@ export function EditorialCover({ event, theme, format, textStyle }: CoverProps) 
           style={{
             textAlign: 'center',
             fontFamily: "'Outfit', sans-serif",
-            fontSize: 14,
+            fontSize: 20,
             fontWeight: 400,
             letterSpacing: '0.45em',
             textTransform: 'uppercase',
@@ -75,14 +83,14 @@ export function EditorialCover({ event, theme, format, textStyle }: CoverProps) 
           EVA
         </div>
 
-        {/* Center: Title */}
+        {/* Center: Title + tagline + subtitle */}
         <div style={{ textAlign: 'center' }}>
           {titleLines.map((line, i) => (
             <div
               key={i}
               style={{
                 fontSize: i === 0 ? 104 : 96,
-                fontWeight: 300,
+                fontWeight: 400,
                 color: theme.text,
                 lineHeight: 1.05,
                 letterSpacing: '0.04em',
@@ -98,11 +106,45 @@ export function EditorialCover({ event, theme, format, textStyle }: CoverProps) 
           <div
             style={{
               width: 50,
-              height: 1,
+              height: 2,
               background: theme.accent,
               margin: '32px auto 0',
             }}
           />
+          {/* Tagline */}
+          {event.tagline && (
+            <div
+              style={{
+                fontFamily: "'Outfit', sans-serif",
+                fontSize: 28,
+                fontWeight: 600,
+                letterSpacing: '0.3em',
+                textTransform: 'uppercase',
+                color: theme.accent,
+                marginTop: 28,
+                textShadow: '0 1px 8px rgba(0,0,0,0.3)',
+              }}
+            >
+              {event.tagline}
+            </div>
+          )}
+          {/* Subtitle */}
+          {event.subtitle && event.subtitle.split('\n').map((line, i) => (
+            <div
+              key={i}
+              style={{
+                fontSize: 42,
+                fontWeight: 600,
+                fontStyle: 'italic',
+                color: theme.text,
+                marginTop: i === 0 ? 20 : 4,
+                lineHeight: 1.2,
+                textShadow: '0 2px 16px rgba(0,0,0,0.6)',
+              }}
+            >
+              {line}
+            </div>
+          ))}
         </div>
 
         {/* Bottom: Date + Footer */}
@@ -110,12 +152,12 @@ export function EditorialCover({ event, theme, format, textStyle }: CoverProps) 
           <div
             style={{
               fontFamily: "'Outfit', sans-serif",
-              fontSize: 14,
+              fontSize: 24,
               fontWeight: 300,
               letterSpacing: '0.35em',
               textTransform: 'uppercase',
               color: theme.accent,
-              marginBottom: 8,
+              marginBottom: 10,
             }}
           >
             {event.date}
@@ -123,7 +165,7 @@ export function EditorialCover({ event, theme, format, textStyle }: CoverProps) 
           <div
             style={{
               fontFamily: "'Outfit', sans-serif",
-              fontSize: 12,
+              fontSize: 20,
               fontWeight: 300,
               letterSpacing: '0.25em',
               textTransform: 'uppercase',

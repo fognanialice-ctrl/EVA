@@ -32,7 +32,7 @@ export function TypeOnlyCover({ event, theme, format, textStyle }: CoverProps) {
           right: 0,
           textAlign: 'center',
           fontFamily: "'Outfit', sans-serif",
-          fontSize: 14,
+          fontSize: 20,
           fontWeight: 400,
           letterSpacing: '0.45em',
           textTransform: 'uppercase',
@@ -59,7 +59,7 @@ export function TypeOnlyCover({ event, theme, format, textStyle }: CoverProps) {
             key={i}
             style={{
               fontSize: i === 0 ? 96 : 88,
-              fontWeight: 300,
+              fontWeight: 400,
               color: theme.text,
               lineHeight: 1.05,
               letterSpacing: '0.06em',
@@ -87,15 +87,35 @@ export function TypeOnlyCover({ event, theme, format, textStyle }: CoverProps) {
         <div
           style={{
             fontFamily: "'Outfit', sans-serif",
-            fontSize: 13,
-            fontWeight: 300,
-            letterSpacing: '0.35em',
+            fontSize: 28,
+            fontWeight: 600,
+            letterSpacing: '0.3em',
             textTransform: 'uppercase',
-            color: theme.textMuted,
+            color: theme.accent,
             marginBottom: 16,
           }}
         >
           {event.tagline}
+        </div>
+      )}
+
+      {/* Subtitle */}
+      {event.subtitle && (
+        <div style={{ marginBottom: 16 }}>
+          {event.subtitle.split('\n').map((line, i) => (
+            <div
+              key={i}
+              style={{
+                fontSize: 42,
+                fontWeight: 600,
+                fontStyle: 'italic',
+                color: theme.textMuted,
+                lineHeight: 1.2,
+              }}
+            >
+              {line}
+            </div>
+          ))}
         </div>
       )}
 
@@ -112,12 +132,12 @@ export function TypeOnlyCover({ event, theme, format, textStyle }: CoverProps) {
         <div
           style={{
             fontFamily: "'Outfit', sans-serif",
-            fontSize: 15,
+            fontSize: 24,
             fontWeight: 300,
             letterSpacing: '0.3em',
             textTransform: 'uppercase',
             color: theme.accent,
-            marginBottom: 8,
+            marginBottom: 10,
           }}
         >
           {event.date}
@@ -125,7 +145,7 @@ export function TypeOnlyCover({ event, theme, format, textStyle }: CoverProps) {
         <div
           style={{
             fontFamily: "'Outfit', sans-serif",
-            fontSize: 13,
+            fontSize: 20,
             fontWeight: 300,
             letterSpacing: '0.25em',
             textTransform: 'uppercase',

@@ -16,6 +16,10 @@ export function CoverExport({ targetRef, filename }: CoverExportProps) {
 
     const { default: html2canvas } = await import('html2canvas')
 
+    // Temporarily remove the preview scale transform so html2canvas captures at full resolution
+    const savedTransform = exportEl.style.transform
+    exportEl.style.transform = 'none'
+
     const canvas = await html2canvas(exportEl, {
       scale: 1,
       useCORS: true,
@@ -24,6 +28,9 @@ export function CoverExport({ targetRef, filename }: CoverExportProps) {
       width: exportEl.offsetWidth,
       height: exportEl.offsetHeight,
     })
+
+    // Restore the preview transform
+    exportEl.style.transform = savedTransform
 
     const link = document.createElement('a')
     link.download = `${filename}.png`

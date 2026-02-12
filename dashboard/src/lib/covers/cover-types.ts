@@ -1,4 +1,4 @@
-export type CoverVariant = 'type-only' | 'editorial' | 'noir'
+export type CoverVariant = 'type-only' | 'editorial' | 'noir' | 'card'
 
 export type CoverFormat = 'portrait' | 'square' | 'story'
 
@@ -18,16 +18,35 @@ export interface CoverTheme {
   overlay?: string
 }
 
+export type OverlayColorId = 'nero' | 'crema' | 'burgundy' | 'oro'
+
+export interface OverlayColorOption {
+  id: OverlayColorId
+  label: string
+  hex: string
+}
+
+export const OVERLAY_COLORS: OverlayColorOption[] = [
+  { id: 'nero', label: 'Nero', hex: '#080C12' },
+  { id: 'crema', label: 'Crema', hex: '#FAF7F2' },
+  { id: 'burgundy', label: 'Burgundy', hex: '#6B2D3E' },
+  { id: 'oro', label: 'Oro', hex: '#B59A5B' },
+]
+
 export interface CoverTextStyle {
   titleItalic: boolean
   titleUppercase: boolean
   footerText: string
+  overlayColor: string
+  overlayOpacity: number
 }
 
 export const defaultTextStyle: CoverTextStyle = {
   titleItalic: false,
   titleUppercase: false,
   footerText: '',
+  overlayColor: '#080C12',
+  overlayOpacity: 0,
 }
 
 export interface CoverEventData {
@@ -45,6 +64,17 @@ export interface CoverEventData {
     atmosphere: string
     [key: string]: string
   }
+  // Card-specific fields
+  cardText?: string
+  cardSeriesLabel?: string
+  cardItalic?: boolean
+  cardInteractive?: 'poll' | 'slider' | 'tot' | 'qbox'
+  cardOptionA?: string
+  cardOptionB?: string
+  cardSliderEmoji?: string
+  cardColorStyle?: string
+  cardPhotoUrl?: string
+  cardOverlayOpacity?: number
 }
 
 export interface CoverProps {

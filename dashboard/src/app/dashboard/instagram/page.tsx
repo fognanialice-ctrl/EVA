@@ -6,18 +6,14 @@ import { PageHeader } from '@/components/layout/page-header'
 import { CampaignOverview } from '@/components/instagram/campaign-overview'
 import { CampaignCalendar } from '@/components/instagram/campaign-calendar'
 import { ContentBank } from '@/components/instagram/content-bank'
-import { HashtagDM } from '@/components/instagram/hashtag-dm'
-import { CampaignMetrics } from '@/components/instagram/campaign-metrics'
-import { CampaignChecklist } from '@/components/instagram/campaign-checklist'
 import { CoverEditor } from '@/components/instagram/cover-editor'
+import { CampaignChecklist } from '@/components/instagram/campaign-checklist'
 
 const TABS = [
   { id: 'overview', label: 'Panoramica' },
   { id: 'calendar', label: 'Calendario' },
   { id: 'content', label: 'Contenuti' },
-  { id: 'covers', label: 'Covers' },
-  { id: 'hashtags', label: 'Hashtag & DM' },
-  { id: 'metrics', label: 'Metriche' },
+  { id: 'create', label: 'Crea' },
   { id: 'checklist', label: 'Checklist' },
 ] as const
 
@@ -55,9 +51,7 @@ export default function InstagramPage() {
       {activeTab === 'overview' && <CampaignOverview />}
       {activeTab === 'calendar' && <CampaignCalendar />}
       {activeTab === 'content' && <ContentBank />}
-      {activeTab === 'covers' && <CoverEditor />}
-      {activeTab === 'hashtags' && <HashtagDM />}
-      {activeTab === 'metrics' && <CampaignMetrics />}
+      {activeTab === 'create' && <CoverEditor />}
       {activeTab === 'checklist' && <CampaignChecklist />}
     </div>
   )

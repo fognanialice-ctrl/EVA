@@ -1,9 +1,8 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { ExternalLink } from 'lucide-react'
+import { Fragment, useEffect, useState } from 'react'
 import { Card } from '@/components/ui/card'
-import { CAMPAIGN, OVERVIEW_STATS, PROGRESS_LABELS } from '@/lib/instagram-content'
+import { CAMPAIGN, OVERVIEW_STATS, PROGRESS_LABELS, METRIC_ROWS, TIME_ESTIMATES } from '@/lib/instagram-content'
 
 export function CampaignOverview() {
   const [daysLeft, setDaysLeft] = useState<number | null>(null)
@@ -82,19 +81,8 @@ export function CampaignOverview() {
         </div>
       </Card>
 
-      {/* Card Generator link */}
-      <a
-        href="/EVA/sprints/01_genova_gathering/instagram/card-generator.html"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="inline-flex items-center gap-2 border border-warm-text text-warm-text px-4 py-2 text-sm font-body hover:bg-warm-text hover:text-white transition-colors duration-150 mb-6"
-      >
-        Apri Card Generator
-        <ExternalLink size={14} />
-      </a>
-
       {/* Golden Thread */}
-      <Card className="border-muted-gold">
+      <Card className="border-muted-gold mb-8">
         <h2 className="font-serif text-xl text-warm-text mb-3">
           Il Filo d&apos;Oro — La Domanda Guida
         </h2>
@@ -112,6 +100,54 @@ export function CampaignOverview() {
           ))}
         </div>
       </Card>
+
+      {/* Weekly metric targets */}
+      <h2 className="font-serif text-xl text-warm-text mb-4 pb-2 border-b border-stone">
+        Obiettivi per Settimana
+      </h2>
+
+      <div className="grid grid-cols-5 gap-2 mb-8">
+        {/* Headers */}
+        <div className="text-xs uppercase tracking-widest text-warm-muted font-body font-semibold p-2">
+          Metrica
+        </div>
+        {[1, 2, 3, 4].map((w) => (
+          <div key={w} className="text-xs uppercase tracking-widest text-warm-muted font-body font-semibold p-2 text-center">
+            Sett. {w}
+          </div>
+        ))}
+
+        {/* Data rows */}
+        {METRIC_ROWS.map((row) => (
+          <Fragment key={row.label}>
+            <div className="bg-white border border-stone p-3 flex items-center">
+              <span className="text-xs text-warm-light font-body">{row.label}</span>
+            </div>
+            {row.values.map((val, i) => (
+              <div key={i} className="bg-white border border-stone p-3 text-center">
+                <span className="font-serif text-lg text-terracotta">{val}</span>
+              </div>
+            ))}
+          </Fragment>
+        ))}
+      </div>
+
+      {/* Time estimates */}
+      <h2 className="font-serif text-xl text-warm-text mb-4 pb-2 border-b border-stone">
+        Tempo Settimanale Stimato
+      </h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {TIME_ESTIMATES.map((est) => (
+          <Card key={est.label}>
+            <div className="text-xs uppercase tracking-widest text-warm-muted mb-2 font-body">
+              {est.label}
+            </div>
+            <p className={`text-sm font-body leading-relaxed ${est.label === 'Totale' ? 'text-terracotta font-medium' : 'text-warm-text'}`}>
+              {est.text}
+            </p>
+          </Card>
+        ))}
+      </div>
     </div>
   )
 }

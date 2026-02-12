@@ -40,6 +40,15 @@ export function NoirCover({ event, theme, format, textStyle }: CoverProps) {
             objectPosition: 'center 30%',
           }}
         />
+        {/* Color overlay */}
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            background: style.overlayColor,
+            opacity: style.overlayOpacity / 100,
+          }}
+        />
         {/* Gradient fade to background */}
         <div
           style={{
@@ -53,15 +62,6 @@ export function NoirCover({ event, theme, format, textStyle }: CoverProps) {
               ${theme.background}CC 85%,
               ${theme.background} 100%
             )`,
-          }}
-        />
-        {/* Subtle burgundy tint */}
-        <div
-          style={{
-            position: 'absolute',
-            inset: 0,
-            background: 'rgba(107, 45, 62, 0.15)',
-            mixBlendMode: 'color',
           }}
         />
       </div>
@@ -86,7 +86,7 @@ export function NoirCover({ event, theme, format, textStyle }: CoverProps) {
               key={i}
               style={{
                 fontSize: i === 0 ? 88 : 80,
-                fontWeight: 300,
+                fontWeight: 400,
                 color: theme.text,
                 lineHeight: 1.05,
                 letterSpacing: '0.06em',
@@ -103,23 +103,60 @@ export function NoirCover({ event, theme, format, textStyle }: CoverProps) {
         <div
           style={{
             width: 50,
-            height: 1,
+            height: 2,
             background: theme.accent,
-            marginBottom: 32,
+            marginBottom: 28,
           }}
         />
+
+        {/* Tagline */}
+        {event.tagline && (
+          <div
+            style={{
+              fontFamily: "'Outfit', sans-serif",
+              fontSize: 28,
+              fontWeight: 600,
+              letterSpacing: '0.3em',
+              textTransform: 'uppercase',
+              color: theme.accent,
+              marginBottom: 12,
+            }}
+          >
+            {event.tagline}
+          </div>
+        )}
+
+        {/* Subtitle */}
+        {event.subtitle && (
+          <div style={{ marginBottom: 24 }}>
+            {event.subtitle.split('\n').map((line, i) => (
+              <div
+                key={i}
+                style={{
+                  fontSize: 42,
+                  fontWeight: 600,
+                  fontStyle: 'italic',
+                  color: theme.text,
+                  lineHeight: 1.2,
+                }}
+              >
+                {line}
+              </div>
+            ))}
+          </div>
+        )}
 
         {/* Date + footer block */}
         <div style={{ marginBottom: isStory ? 40 : 0 }}>
           <div
             style={{
               fontFamily: "'Outfit', sans-serif",
-              fontSize: 14,
+              fontSize: 24,
               fontWeight: 300,
               letterSpacing: '0.35em',
               textTransform: 'uppercase',
               color: theme.accent,
-              marginBottom: 8,
+              marginBottom: 10,
             }}
           >
             {event.date}
@@ -127,7 +164,7 @@ export function NoirCover({ event, theme, format, textStyle }: CoverProps) {
           <div
             style={{
               fontFamily: "'Outfit', sans-serif",
-              fontSize: 12,
+              fontSize: 20,
               fontWeight: 300,
               letterSpacing: '0.25em',
               textTransform: 'uppercase',
@@ -145,7 +182,7 @@ export function NoirCover({ event, theme, format, textStyle }: CoverProps) {
             top: isStory ? 100 : 60,
             right: 72,
             fontFamily: "'Outfit', sans-serif",
-            fontSize: 12,
+            fontSize: 20,
             fontWeight: 400,
             letterSpacing: '0.45em',
             textTransform: 'uppercase',

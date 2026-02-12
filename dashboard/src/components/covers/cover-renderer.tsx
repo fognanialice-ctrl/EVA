@@ -4,6 +4,7 @@ import { COVER_FORMATS, type CoverFormat, type CoverVariant, type CoverEventData
 import { TypeOnlyCover } from './variants/type-only-cover'
 import { EditorialCover } from './variants/editorial-cover'
 import { NoirCover } from './variants/noir-cover'
+import { CardCover } from './variants/card-cover'
 
 interface CoverRendererProps {
   variant: CoverVariant
@@ -18,6 +19,7 @@ const variantComponents: Record<CoverVariant, React.ComponentType<{ event: Cover
   'type-only': TypeOnlyCover,
   'editorial': EditorialCover,
   'noir': NoirCover,
+  'card': CardCover,
 }
 
 export function CoverRenderer({ variant, format, event, theme, textStyle, scale = 0.4 }: CoverRendererProps) {

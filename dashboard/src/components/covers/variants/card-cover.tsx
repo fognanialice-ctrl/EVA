@@ -12,8 +12,8 @@ export function CardCover({ event, format }: CoverProps) {
   const photoUrl = event.cardPhotoUrl
   const overlayOpacity = event.cardOverlayOpacity ?? 0.4
 
-  const feedTextSize = isLong ? 22 : 26
-  const storyTextSize = isLong ? 24 : 28
+  const feedTextSize = isLong ? 44 : 52
+  const storyTextSize = isLong ? 48 : 56
   const textSize = isStory ? storyTextSize : feedTextSize
 
   return (
@@ -68,10 +68,10 @@ export function CardCover({ event, format }: CoverProps) {
         <div
           style={{
             fontFamily: "'DM Sans', sans-serif",
-            fontSize: 11,
+            fontSize: 22,
             letterSpacing: '0.2em',
             textTransform: 'uppercase',
-            marginBottom: 24,
+            marginBottom: 48,
             fontWeight: 500,
             color: color.labelColor,
           }}
@@ -82,9 +82,9 @@ export function CardCover({ event, format }: CoverProps) {
         {/* Accent line */}
         <div
           style={{
-            width: 40,
-            height: 2,
-            marginBottom: 32,
+            width: 80,
+            height: 4,
+            marginBottom: 64,
             background: color.accent,
           }}
         />
@@ -106,15 +106,15 @@ export function CardCover({ event, format }: CoverProps) {
 
         {/* Interactive elements */}
         {interactive === 'poll' && (
-          <div style={{ marginTop: 32, display: 'flex', gap: 12 }}>
+          <div style={{ marginTop: 64, display: 'flex', gap: 24 }}>
             <div
               style={{
                 flex: 1,
-                padding: 12,
-                borderRadius: 8,
+                padding: 24,
+                borderRadius: 16,
                 textAlign: 'center',
                 fontFamily: "'DM Sans', sans-serif",
-                fontSize: 14,
+                fontSize: 28,
                 fontWeight: 500,
                 background: color.interactiveBg,
                 color: color.interactiveText,
@@ -125,11 +125,11 @@ export function CardCover({ event, format }: CoverProps) {
             <div
               style={{
                 flex: 1,
-                padding: 12,
-                borderRadius: 8,
+                padding: 24,
+                borderRadius: 16,
                 textAlign: 'center',
                 fontFamily: "'DM Sans', sans-serif",
-                fontSize: 14,
+                fontSize: 28,
                 fontWeight: 500,
                 background: color.interactiveBg,
                 color: color.interactiveText,
@@ -141,12 +141,12 @@ export function CardCover({ event, format }: CoverProps) {
         )}
 
         {interactive === 'slider' && (
-          <div style={{ marginTop: 32, width: '100%' }}>
+          <div style={{ marginTop: 64, width: '100%' }}>
             <div
               style={{
                 width: '100%',
-                height: 4,
-                borderRadius: 2,
+                height: 8,
+                borderRadius: 4,
                 position: 'relative',
                 background: color.interactiveBg,
               }}
@@ -157,7 +157,7 @@ export function CardCover({ event, format }: CoverProps) {
                   right: '30%',
                   top: '50%',
                   transform: 'translate(50%, -50%)',
-                  fontSize: 24,
+                  fontSize: 48,
                 }}
               >
                 {event.cardSliderEmoji || '❤️'}
@@ -167,14 +167,14 @@ export function CardCover({ event, format }: CoverProps) {
         )}
 
         {interactive === 'tot' && (
-          <div style={{ marginTop: 32, display: 'flex', flexDirection: 'column', gap: 12 }}>
+          <div style={{ marginTop: 64, display: 'flex', flexDirection: 'column', gap: 24 }}>
             <div
               style={{
-                padding: 16,
-                borderRadius: 12,
+                padding: 32,
+                borderRadius: 24,
                 textAlign: 'center',
                 fontFamily: "'Cormorant Garamond', serif",
-                fontSize: 20,
+                fontSize: 40,
                 fontWeight: 400,
                 background: color.interactiveBg,
                 color: color.interactiveText,
@@ -184,11 +184,11 @@ export function CardCover({ event, format }: CoverProps) {
             </div>
             <div
               style={{
-                padding: 16,
-                borderRadius: 12,
+                padding: 32,
+                borderRadius: 24,
                 textAlign: 'center',
                 fontFamily: "'Cormorant Garamond', serif",
-                fontSize: 20,
+                fontSize: 40,
                 fontWeight: 400,
                 background: color.interactiveBg,
                 color: color.interactiveText,
@@ -202,12 +202,12 @@ export function CardCover({ event, format }: CoverProps) {
         {interactive === 'qbox' && (
           <div
             style={{
-              marginTop: 32,
-              padding: 20,
-              borderRadius: 12,
+              marginTop: 64,
+              padding: 40,
+              borderRadius: 24,
               textAlign: 'center',
               fontFamily: "'DM Sans', sans-serif",
-              fontSize: 13,
+              fontSize: 26,
               letterSpacing: '0.05em',
               background: color.interactiveBg,
               color: color.interactiveText,
@@ -225,7 +225,7 @@ export function CardCover({ event, format }: CoverProps) {
             bottom: '8%',
             right: '10%',
             fontFamily: "'Cormorant Garamond', serif",
-            fontSize: 13,
+            fontSize: 26,
             fontWeight: 400,
             letterSpacing: '0.15em',
             color: color.watermarkColor,
